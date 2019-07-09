@@ -1,0 +1,28 @@
+// See README.txt for information and build instructions.
+//
+// Note: START and END tags are used in comments to define sections used in
+// tutorials.  They are not part of the syntax for Protocol Buffers.
+//
+// To get an in-depth walkthrough of this file and the related examples, see:
+// https://developers.google.com/protocol-buffers/docs/tutorials
+
+syntax = "proto2";
+package sample;
+
+message Timestamp {
+  required int64 seconds = 1;
+  required int32 nanos = 2;
+}
+
+message Child {
+  repeated string node1 = 1;
+  required sint32 node2 = 2;
+}
+
+message Root {
+  required int32 node1 = 1;
+  repeated string node2 = 2;
+  required bytes node3 = 3;
+  required Child node4 = 4;
+  required Timestamp node5 = 5;
+}

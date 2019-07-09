@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.defaultFormatter": "Dart-Code.dart-code",
+		"files.associations": {
+			"*.ipp": "cpp"
+		}
+	}
+}

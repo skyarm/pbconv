@@ -1,0 +1,12 @@
+name: protobuf
+version: 0.1.0
+description: >
+  The encoder and decoder of google's protobuffer protocol.
+  Using self idl defintion, No idl compiler need.
+authors: Thomas Zhang <zhangtap@skyarm.com>
+homepage: http://github.com/skyarm/protobuf.dart
+environment:
+  sdk: '>=2.4.0 <3.0.0'
+dependencies:
+dev_dependencies:
+
