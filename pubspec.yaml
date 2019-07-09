@@ -1,4 +1,4 @@
-name: protobuf
+name: pbconv
 version: 0.1.0
 description: >
   The encoder and decoder of google's protobuffer protocol.

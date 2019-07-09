@@ -3,12 +3,12 @@
 # See README.txt for information and build instructions.
 
 import sys
-import sample_pb2 as sample
+import crosstest_pb2 as cross
 
 encoding = False
 
 if encoding :
-  root = sample.Root()
+  root = cross.Root()
   root.node1 = -2
   root.node2.extend(["1", "2", "3"])
   root.node3 = b"88889999"
@@ -19,7 +19,7 @@ if encoding :
     file.write(root.SerializeToString())
     file.close()
 else:
-  root = sample.Root()
+  root = cross.Root()
   with open("sample.bin", "rb") as file:
     root.ParseFromString(file.read())
     file.close()

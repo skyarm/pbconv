@@ -1,4 +1,4 @@
-library protobuf;
+library pbconv;
 
 import "dart:convert";
 import "dart:typed_data";

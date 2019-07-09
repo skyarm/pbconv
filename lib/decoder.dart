@@ -2,7 +2,7 @@
 //
 //
 //
-part of protobuf;
+part of pbconv;
 
 int _unzigzag32(int v) {
   if (v & 1 != 0) {

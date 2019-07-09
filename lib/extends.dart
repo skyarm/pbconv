@@ -1,4 +1,4 @@
-part of protobuf;
+part of pbconv;
 
 class Timestamp {
   static final List<Field> fields = [

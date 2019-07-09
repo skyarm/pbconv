@@ -1,4 +1,4 @@
-part of protobuf;
+part of pbconv;
 
 abstract class _Message {
   _Message(List<Field> fields) {

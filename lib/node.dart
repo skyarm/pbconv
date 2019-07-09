@@ -1,4 +1,4 @@
-part of protobuf;
+part of pbconv;
 //
 //
 //

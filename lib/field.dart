@@ -2,7 +2,7 @@
 //
 //
 //
-part of protobuf;
+part of pbconv;
 
 enum Label { required, optional, repeated }
 

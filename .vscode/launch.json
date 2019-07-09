@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "example1",
-            "program": "examples/sample.dart",
+            "program": "tests/crosstest.dart",
             "request": "launch",
             "type": "dart"
         }

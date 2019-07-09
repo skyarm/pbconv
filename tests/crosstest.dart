@@ -2,7 +2,7 @@ import 'dart:core';
 import "dart:io";
 import 'dart:typed_data';
 
-import "package:protobuf/protobuf.dart";
+import "package:pbconv/pbconv.dart";
 
 class Coordinate {
   Coordinate(double x, double y) {
@@ -75,7 +75,7 @@ final List<Field> __root_fileds__ = [
 
 
 main() {
-  var encoding = false;
+  var encoding = true;
   if (encoding) {
     ProtobufEncoder encoder = ProtobufEncoder();
 
@@ -101,12 +101,13 @@ main() {
     Uint8List bytes = encoder.convert(root);
     print(bytes.toList());
 
-    File sample = File("examples/sample.bin");
+    File sample = File("tests/crosstest.bin");
+    //sample.createSync();
     sample.writeAsBytesSync(bytes);
     print(root.toString());
 
   } else {
-    File sample = File("examples/sample.bin");
+    File sample = File("tests/crosstest.bin");
     var bytes = sample.readAsBytesSync();
     print(bytes);
     ProtobufDecoder decoder = ProtobufDecoder(__root_fileds__);
