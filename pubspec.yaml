@@ -1,11 +1,11 @@
 name: pbconv
 version: 0.5.3
-author: Thomas Zhang <zhangtap@skyarm.com>
+author: Thomas Zhang <zhangtao@skyarm.com>
 description: >-
   A implement of Dart:convert for [Protobuf](https://developers.google.com/protocol-buffers/).
 homepage: http://github.com/skyarm/pbconv
 environment:
-  sdk: '>=2.4.0 <3.0.0'
+  sdk: '>=2.0.0 <3.0.0'
 dependencies:
 dev_dependencies:
 
