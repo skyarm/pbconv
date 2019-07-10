@@ -4,12 +4,6 @@ import 'dart:typed_data';
 import "package:pbconv/pbconv.dart";
 
 class Person {
-  static final List<Field> fields = [
-    RequiredField(1, "id", Type.uint32),
-    RequiredField(2, "name", Type.string),
-    RepeatedField(3, "emails", Type.string)
-  ];
-
   Person(int id, String name, List<String> emails) {
     _id = id;
     _name = name;
@@ -24,9 +18,16 @@ class Person {
     return _PersonEncoder(person);
   }
 
+  //this static method must be implemented.
   static DecoderMessage createDecoder() {
     return _PersonDecoder();
   }
+  //Declare the Person message fileds, include tag, name and type.
+  static final List<Field> fields = [
+    RequiredField(1, "ID", Type.uint32),
+    RequiredField(2, "Name", Type.string),
+    RepeatedField(3, "Emails", Type.string)
+  ];
 }
 
 class _PersonEncoder extends EncoderMessage {
@@ -57,8 +58,8 @@ class RepeatedPersonField extends Field {
             value: Person.fields, createDecoderFunc: Person.createDecoder) {}
 }
 
+//Addressbook
 class Addressbook {
-  static final List<Field> fields = [RepeatedPersonField(1, "Person")];
   Addressbook() {
     _persons = List<Person>();
   }
@@ -70,14 +71,15 @@ class Addressbook {
   static EncoderMessage createEncoder(Addressbook addressbook) {
     return _AddressbookEncoder(addressbook);
   }
-
   static DecoderMessage createDecoder() {
     return _AddressbookDecoder();
   }
+  static final List<Field> fields = [RepeatedPersonField(1, "Person")];
 
   List<Person> _persons;
 }
 
+//Implements _AddressbookEncoder, It will initial encdder data.
 class _AddressbookEncoder extends EncoderMessage {
   _AddressbookEncoder(Addressbook addressbook) : super(Addressbook.fields) {
     var encoders = List<_PersonEncoder>();
@@ -88,6 +90,7 @@ class _AddressbookEncoder extends EncoderMessage {
   }
 }
 
+//Implements _AddressbookDecoder, it is used to fetch data from Decoder.
 class _AddressbookDecoder extends DecoderMessage {
   _AddressbookDecoder() : super(Addressbook.fields) {
     _addressbook._persons = List<Person>();
@@ -103,15 +106,19 @@ class _AddressbookDecoder extends DecoderMessage {
 }
 
 main() {
-  File file = File("./addressbook.pbb");
+  File file = File("./addressbook.bin");
+  //if the file isn't exists.
   if (!file.existsSync()) {
     var addressbook = Addressbook();
+    //add person to addressbook.
     addressbook
         .addPerson(Person(1, "Tom", ["tom@example1.com", "tom@example2.com"]));
     addressbook.addPerson(
         Person(2, "Thomas", ["thomas@example1.com", "thomas@example2.com"]));
 
+    //ProtobufEncoder implemets dart:convert.
     var encoder = ProtobufEncoder();
+    //now convert the addressbook message to binary bytes.
     var bytes = encoder.convert(Addressbook.createEncoder(addressbook));
 
     file.writeAsBytesSync(bytes);
@@ -120,6 +127,8 @@ main() {
     print(bytes);
     ProtobufDecoder decoder = ProtobufDecoder(Addressbook.fields);
     DecoderMessage decoderMessage = decoder.convert(bytes);
+    //decoderMessage.toString() return XML debug message, but the message hasn't root element.
+    //it is used for debug only.
     print(decoderMessage.toString());
   }
 }
