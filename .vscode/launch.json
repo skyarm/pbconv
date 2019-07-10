@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "example1",
-            "program": "tests/crotest/crosstest.dart",
+            "program": "examples/addressbook.dart",
             "request": "launch",
             "type": "dart"
         }

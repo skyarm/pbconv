@@ -1,7 +1,7 @@
 part of pbconv;
 
 class Timestamp {
-  static final List<Field> fields = [
+  static final List<Field> _fields = [
     RequiredField(1, "Seconds", Type.int64),
     RequiredField(2, "Nanos", Type.int32),
   ];
@@ -17,26 +17,26 @@ class Timestamp {
 class RequiredTimestamp extends Field {
   RequiredTimestamp(int tag, String name)
       : super(tag, name, Label.required, Type.message,
-            value: Timestamp.fields,
+            value: Timestamp._fields,
             createDecoderFunc: Timestamp.createDecoder) {}
 }
 
 class OptionalTimestamp extends Field {
   OptionalTimestamp(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
-            value: Timestamp.fields,
+            value: Timestamp._fields,
             createDecoderFunc: Timestamp.createDecoder) {}
 }
 
 class RepeatedTimestamp extends Field {
   RepeatedTimestamp(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Timestamp.fields,
+            value: Timestamp._fields,
             createDecoderFunc: Timestamp.createDecoder) {}
 }
 
 class _TimestampEncoder extends EncoderMessage {
-  _TimestampEncoder([DateTime value = null]) : super(Timestamp.fields) {
+  _TimestampEncoder([DateTime value = null]) : super(Timestamp._fields) {
     if (value == null) {
       value = DateTime.now();
     }
@@ -44,31 +44,33 @@ class _TimestampEncoder extends EncoderMessage {
         value.microsecondsSinceEpoch ~/ Duration.microsecondsPerSecond;
     int nanos =
         value.microsecondsSinceEpoch - seconds * Duration.microsecondsPerSecond;
-    this[Timestamp.fields[0]] = seconds;
-    this[Timestamp.fields[1]] = nanos;
+        
+    this[Timestamp._fields[0]] = seconds;
+    this[Timestamp._fields[1]] = nanos;
   }
 }
 
 class _TimestampDecoder extends DecoderMessage {
-  _TimestampDecoder() : super(Timestamp.fields) {}
+  _TimestampDecoder() : super(Timestamp._fields) {
+  }
 
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     super.decode(parent, bytes, offset, end);
 
-    int seconds = this[Timestamp.fields[0]];
-    int nanos = this[Timestamp.fields[1]];
+    int seconds = this[_fields[0]];
+    int nanos = this[_fields[1]];
 
-    _datetime = DateTime.fromMicrosecondsSinceEpoch(
+    _dateTime = DateTime.fromMicrosecondsSinceEpoch(
         seconds * Duration.microsecondsPerSecond + nanos);
   }
 
-  DateTime get realObject => _datetime;
+  DateTime get realObject => _dateTime;
 
   String toString() {
-    return _datetime.toString();
+    return _dateTime.toString();
   }
 
-  DateTime _datetime;
+  DateTime _dateTime;
 }
 
 class Timespan {
@@ -78,54 +80,53 @@ class Timespan {
   ];
 
   static EncoderMessage createEncoder(Duration value) {
-    return _DurationEncoder(value);
+    return _TimespanEncoder(value);
   }
 
   static DecoderMessage createDecoder() {
-    return _DurationDecoder();
+    return _TimespanDecoder();
   }
 }
 
-class RequiredDuration extends Field {
-  RequiredDuration(int tag, String name)
+class RequiredTimespan extends Field {
+  RequiredTimespan(int tag, String name)
       : super(tag, name, Label.required, Type.message,
             value: Timespan.fields,
             createDecoderFunc: Timespan.createDecoder) {}
 }
 
-class OptionalDuration extends Field {
-  OptionalDuration(int tag, String name)
+class OptionalTimespan extends Field {
+  OptionalTimespan(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
             value: Timespan.fields,
             createDecoderFunc: Timespan.createDecoder) {}
 }
 
-class RepeatedDuration extends Field {
-  RepeatedDuration(int tag, String name)
+class RepeatedTimespan extends Field {
+  RepeatedTimespan(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
             value: Timespan.fields,
             createDecoderFunc: Timespan.createDecoder) {}
 }
 
-class _DurationEncoder extends EncoderMessage {
-  _DurationEncoder([Duration value = null]) : super(Timespan.fields) {
-    if (value == null) {
-      value = Duration();
-    }
+class _TimespanEncoder extends EncoderMessage {
+  _TimespanEncoder(Duration value) : super(Timespan.fields) {
+    assert(value != null);
     int seconds = value.inSeconds;
     this[Timespan.fields[0]] = seconds;
     this[Timespan.fields[1]] = value.inMicroseconds - seconds * Duration.microsecondsPerSecond;
   }
 }
 
-class _DurationDecoder extends DecoderMessage {
-  _DurationDecoder() : super(Timespan.fields) {}
+class _TimespanDecoder extends DecoderMessage {
+  _TimespanDecoder() : super(Timespan.fields) {
+  }
 
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     super.decode(parent, bytes, offset, end);
 
-    int seconds = this[Timespan.fields[0]];
-    int nanos = this[Timespan.fields[1]];
+    int seconds = this[_fields[0]];
+    int nanos = this[_fields[1]];
 
     int days = seconds ~/ Duration.secondsPerDay;
     seconds -= days * Duration.secondsPerDay;

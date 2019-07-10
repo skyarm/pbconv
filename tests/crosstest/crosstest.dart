@@ -1,4 +1,3 @@
-import 'dart:core';
 import "dart:io";
 import 'dart:typed_data';
 
@@ -17,8 +16,8 @@ class Coordinate {
     RequiredField(2, "Latitude", Type.float64)
     ];
 
-  static EncoderMessage createEncoder(double longitude, double latitude) {
-    return CoordinateEncoder(longitude, latitude);
+  static EncoderMessage createEncoder(Coordinate coord) {
+    return CoordinateEncoder(coord);
   }
   static DecoderMessage createDecoder() {
     return CoordinateDecoder();
@@ -40,9 +39,10 @@ class OptionalCoordinate extends Field {
 }
 
 class CoordinateEncoder extends EncoderMessage {
-  CoordinateEncoder(double longitude, latitude) : super(Coordinate.fields) {
-    this[Coordinate.fields[0]] = longitude;
-    this[Coordinate.fields[1]] = latitude;
+  CoordinateEncoder(Coordinate coord) : super(Coordinate.fields) {
+    assert(coord != null);
+    this[Coordinate.fields[0]] = coord.longitude;
+    this[Coordinate.fields[1]] = coord.latitude;
   }
 }
 
@@ -58,61 +58,63 @@ class CoordinateDecoder extends DecoderMessage {
   Coordinate _coordinate;
 }
 
-//Example of message nodes defintion.
-final List<Field> __child_fields__ = [
+final List<Field> childFields = [
   RepeatedField(1, "Node1", Type.string),
   RequiredField(2, "Node2", Type.sint32),
 ];
 
-final List<Field> __root_fileds__ = [
+final List<Field> rootFileds = [
   RequiredField(1, "Node1", Type.int32),
   RepeatedField(2, "Node2", Type.string),
   RequiredField(3, "Node3", Type.bytes),
-  RequiredMessage(4, "Child", __child_fields__),
+  RequiredMessage(4, "Child", childFields),
   RequiredTimestamp(5, "Timestamp"), 
   RequiredCoordinate(6, "Coordinate")
 ];
 
 
 main() {
-  var encoding = true;
+  var encoding = false;
   if (encoding) {
     ProtobufEncoder encoder = ProtobufEncoder();
 
-    var root = EncoderMessage(__root_fileds__);
+    var root = EncoderMessage(rootFileds);
   
-    root[__root_fileds__[0]] = -2;
+    root[rootFileds[0]] = -2;
 
-    root[__root_fileds__[1]] = ["sfs", '2233'];
+    root[rootFileds[1]] = ["sfs", '2233'];
 
     Uint8List data = Uint8List(8);
     data.buffer.asByteData().setFloat64(0, 0.123);
-    root[__root_fileds__[2]] = data;
+    root[rootFileds[2]] = data;
 
-    var child = EncoderMessage(__child_fields__);
-    root[__root_fileds__[3]] = child;
+    var child = EncoderMessage(childFields);
+    root[rootFileds[3]] = child;
 
-    child[__child_fields__[0]] = ["dsfsdfsd"];
-    child[__child_fields__[1]] = 23;
+    child[childFields[0]] = ["dsfsdfsd"];
+    child[childFields[1]] = 23;
 
-    root[__root_fileds__[4]]= Timestamp.createEncoder(DateTime.now()); //set to now
-    root[__root_fileds__[5]]= Coordinate.createEncoder(1, 2);
+    root[rootFileds[4]]= Timestamp.createEncoder(DateTime.now()); //set to now
+    root[rootFileds[5]]= Coordinate.createEncoder(Coordinate(12.11, 34.23));
 
     Uint8List bytes = encoder.convert(root);
     print(bytes.toList());
 
-    File sample = File("tests/crosstest.bin");
+    File sample = File("tests/crosstest/crosstest.bin");
     //sample.createSync();
     sample.writeAsBytesSync(bytes);
     print(root.toString());
 
   } else {
-    File sample = File("tests/crosstest.bin");
+    File sample = File("tests/crosstest/crosstest.bin");
     var bytes = sample.readAsBytesSync();
     print(bytes);
-    ProtobufDecoder decoder = ProtobufDecoder(__root_fileds__);
+    ProtobufDecoder decoder = ProtobufDecoder(rootFileds);
     DecoderMessage decoderMessage = decoder.convert(bytes);
     print(decoderMessage.toString());
-    print(decoderMessage[__root_fileds__[4]].year);
+
+    print("TimerStamp: ${decoderMessage[rootFileds[4]].year}, ${decoderMessage[rootFileds[4]].month}");
+
+    print("Coord: ${decoderMessage[rootFileds[5]].longitude}, ${decoderMessage[rootFileds[5]].latitude}");
   }
 }

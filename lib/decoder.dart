@@ -4,178 +4,6 @@
 //
 part of pbconv;
 
-int _unzigzag32(int v) {
-  if (v & 1 != 0) {
-    return -(v >> 1) - 1;
-  } else {
-    return v >> 1;
-  }
-}
-
-int _unzigzag64(int v) {
-  if (v & 1 != 0) {
-    return -(v >> 1) - 1;
-  } else {
-    return v >> 1;
-  }
-}
-
-int _decodeUint32(Uint8List bytes, int offset, int length) {
-  int value = bytes[offset] & 0x7f;
-  if (length > 1) {
-    value |= ((bytes[offset + 1] & 0x7f) << 7);
-    if (length > 2) {
-      value |= ((bytes[offset + 2] & 0x7f) << 14);
-      if (length > 3) {
-        value |= ((bytes[offset + 3] & 0x7f) << 21);
-        if (length > 4) value |= (bytes[offset + 4] << 28);
-      }
-    }
-  }
-  return value;
-}
-
-int _decodeFixed32(Uint8List data, int offset, int count) {
-  var bd = data.buffer.asByteData(offset);
-  //FIXME:Why it using Litte Endia? Or using the host byte order?
-  //When I using the network byte order, but get wrong result,
-  //So I have to using Endian.little to decode it.
-  return bd.getUint32(0, Endian.little);
-}
-
-int _decodeSfixed32(Uint8List data, int offset, int count) {
-  var bd = data.buffer.asByteData(offset);
-  //FIXME:Why it using Litte Endia? Or using the host byte order?
-  //When I using the network byte order, but get wrong result,
-  //So I have to using Endian.little to decode it.
-  return bd.getInt32(0, Endian.little);
-}
-
-double _decodeFloat32(Uint8List byteList, int offset, int count) {
-  var bd = byteList.buffer.asByteData(offset);
-  //FIXME:Why it using Litte Endia? Or using the host byte order?
-  //When I using the network byte order, but get wrong result,
-  //So I have to using Endian.little to decode it.
-  return bd.getFloat32(0, Endian.little);
-}
-
-int _decodeUint64(Uint8List bytes, int offset, int count) {
-  int value;
-  if (count < 5) {
-    return _decodeUint32(bytes, offset, count);
-  }
-  value = ((bytes[offset] & 0x7f)) |
-      ((bytes[offset + 1] & 0x7f) << 7) |
-      ((bytes[offset + 2] & 0x7f) << 14) |
-      ((bytes[offset + 3] & 0x7f) << 21);
-  int shift = 28;
-  for (int index = 4; index < count; index++) {
-    value |= (bytes[offset + index] & 0x7f) << shift;
-    shift += 7;
-  }
-  return value;
-}
-
-int _decodeFixed64(Uint8List byteList, int offset, int size) {
-  var byteData = byteList.buffer.asByteData(offset);
-  //FIXME:Why it using Litte Endia? Or using the host byte order?
-  //When I using the network byte order, but get wrong result,
-  //So I have to using Endian.little to decode it.
-  return byteData.getUint64(0, Endian.little);
-}
-
-int _decodeSfixed64(Uint8List byteList, int offset, int size) {
-  var byteData = byteList.buffer.asByteData(offset);
-  //FIXME:Why it using Litte Endia? Or using the host byte order?
-  //When I using the network byte order, but get wrong result,
-  //So I have to using Endian.little to decode it.
-  return byteData.getInt64(0, Endian.little);
-}
-
-double _decodeFloat64(Uint8List byteList, int offset, int size) {
-  var byteData = byteList.buffer.asByteData(offset);
-  //FIXME:Why it using Litte Endia? Or using the host byte order?
-  //When I using the network byte order, but get wrong result,
-  //So I have to using Endian.little to decode it.
-  return byteData.getFloat64(0, Endian.little);
-}
-
-bool _decodeBoolean(Uint8List byteList, int offset, int count) {
-  var byteData = byteList.buffer.asByteData(offset);
-  return byteData.getUint8(0) == 0 ? false : true;
-}
-
-int _decodeLength(Uint8List bytes, int offset, int size) {
-  int count = size > 5 ? 5 : size;
-  int shift = 0;
-  int value = 0;
-  for (int index = 0; index < count; index++) {
-    if (bytes[offset + index] & 0x80 != 0) {
-      value |= (bytes[offset + index] & 0x7f) << shift;
-      shift += 7;
-    } else {
-      value |= bytes[offset + index] << shift;
-      //low 32 bits is the value, hight 32bit is the byte count.
-      value |= (index + 1) << 32;
-      return value;
-    }
-  }
-  //invalid length.
-  return -1;
-}
-
-int _decodeTag(Uint8List bytes, int offset, int length) {
-  int tag = (bytes[offset] & 0x7f) >> 3;
-  int wire = bytes[offset] & 7;
-  int value = 0;
-  //because the tag offen < 128?
-  if ((bytes[offset] & 0x80) == 0) {
-    //low 32 bit is tag, hign 32 bits is count and 3 bits wire.
-    value = (1 << 3 | wire) << 32;
-    return value | tag;
-  }
-  int shift = 4;
-  int count = length > 5 ? 5 : length;
-  for (int index = 1; index < count; index++) {
-    offset += index;
-    if (bytes[offset] & 0x80 != 0) {
-      tag |= (bytes[offset] & 0x7f) << shift;
-      shift += 7;
-    } else {
-      tag |= bytes[offset] << shift;
-      //low 32 bit is tag, hign 32 bits is count and 3 bits wire.
-      value = ((index + 1) << 3 | wire) << 32;
-      return value | tag;
-    }
-  }
-  //return error;
-  return -1;
-}
-
-int _varintLength(Uint8List bytes, int offset, int length, int max) {
-  int count = length > max ? max : length;
-  for (int index = 0; index < count; index++) {
-    if (bytes[offset + index] & 0x80 == 0) {
-      return index + 1;
-    }
-  }
-  //return error.
-  return -1;
-}
-
-String _decodeString(Uint8List bytes, int offset, int length) {
-  return utf8.decode(bytes.sublist(offset, offset + length));
-}
-
-Uint8List _decodeBytes(Uint8List bytes, int offset, int length) {
-  Uint8List value = Uint8List(length);
-  for (int index = 0; index < length; index++) {
-    value[index] = bytes[offset + index];
-  }
-  ;
-  return value;
-}
-
 class Fragment {
   Fragment(int tag, int wire, Uint8List bytes) {
     _tag = tag;
@@ -185,7 +13,7 @@ class Fragment {
 
   get tag => _tag;
   get wire => _wire;
-  get data => _bytes;
+  get bytes => _bytes;
 
   int _tag;
   int _wire;
@@ -656,7 +484,7 @@ class DecoderMessage extends _Message {
           _addMessage(field, message);
         } else {
           var message = field._createDecoderFunc();
-          message.decode(bytes, offset, offset + length, field);
+          message.decode(field, bytes, offset, offset + length);
           _addMessage(field, message);
         }
         break;
@@ -684,6 +512,178 @@ class DecoderMessage extends _Message {
             field._name, field._tag);
       }
     }
+  }
+
+  static int _unzigzag32(int v) {
+    if (v & 1 != 0) {
+      return -(v >> 1) - 1;
+    } else {
+      return v >> 1;
+    }
+  }
+
+  static int _unzigzag64(int v) {
+    if (v & 1 != 0) {
+      return -(v >> 1) - 1;
+    } else {
+      return v >> 1;
+    }
+  }
+
+  static int _decodeUint32(Uint8List bytes, int offset, int length) {
+    int value = bytes[offset] & 0x7f;
+    if (length > 1) {
+      value |= ((bytes[offset + 1] & 0x7f) << 7);
+      if (length > 2) {
+        value |= ((bytes[offset + 2] & 0x7f) << 14);
+        if (length > 3) {
+          value |= ((bytes[offset + 3] & 0x7f) << 21);
+          if (length > 4) value |= (bytes[offset + 4] << 28);
+        }
+      }
+    }
+    return value;
+  }
+
+  static int _decodeFixed32(Uint8List data, int offset, int count) {
+    var bd = data.buffer.asByteData(offset);
+    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //When I using the network byte order, but get wrong result,
+    //So I have to using Endian.little to decode it.
+    return bd.getUint32(0, Endian.little);
+  }
+
+  static int _decodeSfixed32(Uint8List data, int offset, int count) {
+    var bd = data.buffer.asByteData(offset);
+    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //When I using the network byte order, but get wrong result,
+    //So I have to using Endian.little to decode it.
+    return bd.getInt32(0, Endian.little);
+  }
+
+  static double _decodeFloat32(Uint8List byteList, int offset, int count) {
+    var bd = byteList.buffer.asByteData(offset);
+    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //When I using the network byte order, but get wrong result,
+    //So I have to using Endian.little to decode it.
+    return bd.getFloat32(0, Endian.little);
+  }
+
+  static int _decodeUint64(Uint8List bytes, int offset, int count) {
+    int value;
+    if (count < 5) {
+      return _decodeUint32(bytes, offset, count);
+    }
+    value = ((bytes[offset] & 0x7f)) |
+        ((bytes[offset + 1] & 0x7f) << 7) |
+        ((bytes[offset + 2] & 0x7f) << 14) |
+        ((bytes[offset + 3] & 0x7f) << 21);
+    int shift = 28;
+    for (int index = 4; index < count; index++) {
+      value |= (bytes[offset + index] & 0x7f) << shift;
+      shift += 7;
+    }
+    return value;
+  }
+
+  static int _decodeFixed64(Uint8List byteList, int offset, int size) {
+    var byteData = byteList.buffer.asByteData(offset);
+    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //When I using the network byte order, but get wrong result,
+    //So I have to using Endian.little to decode it.
+    return byteData.getUint64(0, Endian.little);
+  }
+
+  static int _decodeSfixed64(Uint8List byteList, int offset, int size) {
+    var byteData = byteList.buffer.asByteData(offset);
+    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //When I using the network byte order, but get wrong result,
+    //So I have to using Endian.little to decode it.
+    return byteData.getInt64(0, Endian.little);
+  }
+
+  static double _decodeFloat64(Uint8List byteList, int offset, int size) {
+    var byteData = byteList.buffer.asByteData(offset);
+    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //When I using the network byte order, but get wrong result,
+    //So I have to using Endian.little to decode it.
+    return byteData.getFloat64(0, Endian.little);
+  }
+
+  static bool _decodeBoolean(Uint8List byteList, int offset, int count) {
+    var byteData = byteList.buffer.asByteData(offset);
+    return byteData.getUint8(0) == 0 ? false : true;
+  }
+
+  static int _decodeLength(Uint8List bytes, int offset, int size) {
+    int count = size > 5 ? 5 : size;
+    int shift = 0;
+    int value = 0;
+    for (int index = 0; index < count; index++) {
+      if (bytes[offset + index] & 0x80 != 0) {
+        value |= (bytes[offset + index] & 0x7f) << shift;
+        shift += 7;
+      } else {
+        value |= bytes[offset + index] << shift;
+        //low 32 bits is the value, hight 32bit is the byte count.
+        value |= (index + 1) << 32;
+        return value;
+      }
+    }
+    //invalid length.
+    return -1;
+  }
+
+  static int _decodeTag(Uint8List bytes, int offset, int length) {
+    int tag = (bytes[offset] & 0x7f) >> 3;
+    int wire = bytes[offset] & 7;
+    int value = 0;
+    //because the tag offen < 128?
+    if ((bytes[offset] & 0x80) == 0) {
+      //low 32 bit is tag, hign 32 bits is count and 3 bits wire.
+      value = (1 << 3 | wire) << 32;
+      return value | tag;
+    }
+    int shift = 4;
+    int count = length > 5 ? 5 : length;
+    for (int index = 1; index < count; index++) {
+      offset += index;
+      if (bytes[offset] & 0x80 != 0) {
+        tag |= (bytes[offset] & 0x7f) << shift;
+        shift += 7;
+      } else {
+        tag |= bytes[offset] << shift;
+        //low 32 bit is tag, hign 32 bits is count and 3 bits wire.
+        value = ((index + 1) << 3 | wire) << 32;
+        return value | tag;
+      }
+    }
+    //return error;
+    return -1;
+  }
+
+  static int _varintLength(Uint8List bytes, int offset, int length, int max) {
+    int count = length > max ? max : length;
+    for (int index = 0; index < count; index++) {
+      if (bytes[offset + index] & 0x80 == 0) {
+        return index + 1;
+      }
+    }
+    //return error.
+    return -1;
+  }
+
+  static  String _decodeString(Uint8List bytes, int offset, int length) {
+    return utf8.decode(bytes.sublist(offset, offset + length));
+  }
+
+  static Uint8List _decodeBytes(Uint8List bytes, int offset, int length) {
+    Uint8List value = Uint8List(length);
+    for (int index = 0; index < length; index++) {
+      value[index] = bytes[offset + index];
+    }
+    ;
+    return value;
   }
 
   List<Fragment> _fragments;

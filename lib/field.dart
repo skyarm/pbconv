@@ -41,7 +41,7 @@ class Field {
 
   bool _review() {
     //the tag must be 32bit unsigned int value.
-    if (_tag > 0xffffffff) {
+    if (_tag < 0 || _tag > 0xffffffff) {
       return false;
     }
     //RequiredNode and OptionalNode cann't be packed.

@@ -2,12 +2,12 @@ part of pbconv;
 
 abstract class _Message {
   _Message(List<Field> fields) {
-    assert(reviewTags(fields), "Tag ID is duplicated");
+    assert(tagsReview(fields), "Tag ID is duplicated");
     _fields = fields;
     _nodes = HashMap<Field, _Node>();
   }
 
-  static bool reviewTags(List<Field> fields) {
+  static bool tagsReview(List<Field> fields) {
     Set<int> tags = Set<int>();
     for (var field in fields) {
       if (tags.contains(field._tag)) {

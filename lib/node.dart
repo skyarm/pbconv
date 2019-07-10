@@ -375,6 +375,7 @@ class _NumberNode extends _Node {
         break;
     }
   }
+
   //Get a XML string, for debug.
   String toString() {
     String xml = "<" + _field._name + ">";
@@ -661,19 +662,32 @@ class _RepeatedMessageNode extends _Node {
   }
 
   Stream<Uint8List> encode(_BytesPager pager) async* {
-    for (var v in _values) {
-      yield* v.encode(pager);
+    for (var value in _values) {
+      yield* encodeTag(pager, _Wire.length);
+
+      //calc the length of message
+      var messageNode = _TempMessageNode(_field, value);
+      var messgePager = _BytesPager(pager.size);
+      List<Uint8List> bytesList =
+          await _Node.pullBytes(messageNode.encode(messgePager));
+
+      yield* encodeUint32(
+          pager, bytesList.length * messgePager.size + messgePager.offset);
+
+      yield* pager.addBytesList(bytesList);
+      yield* pager.addBytes(messgePager.bytes, messgePager.offset);
     }
   }
 
   String toString() {
-    String xml = "<" + _field._name + ">";
+    String xml = "";
     for (var message in _values) {
+      xml += "<" + _field._name + ">";
       xml += message.toString();
+      xml += "</" + _field._name + ">";
     }
-    xml += "</" + _field._name + ">";
     return xml;
   }
 
-  List<EncoderMessage> _values;
+  List<_Message> _values;
 }
