@@ -1,30 +1,45 @@
 A converter for [Protobuf](https://developers.google.com/protocol-buffers/).
 
-[![Pub Package](https://img.shields.io/pub/v/yaml.svg)](https://pub.dev/packages/pbconv)
-[![Build Status](https://travis-ci.org/dart-lang/yaml.svg?branch=master)](https://travis-ci.org/dart-lang/yaml)
+Convert a message object to proto buffer binary bytes, Or convert proto buffer binary bytes to a message object.
 
-Use `loadYaml` to load a single document, or `loadYamlStream` to load a
-stream of documents. For example:
-
+This is the encoder example.
 ```dart
-import 'dart:typed_data';
+import "dart:io";
 import 'package:pbconv/pbconv.dart';
 
+final List<Field> fields = [
+    RequiredField(1, 'ID', Type.uint32),
+    RequiredField(2, "Name", Type.string),
+    OptionalField(3, "Email", Type.string, 'tom@example.com')
+];
+
 main() {
-  var doc = loadYaml("YAML: YAML Ain't Markup Language");
-  print(doc['YAML']);
+  var message = EncoderMessage(fields);
+  message[fields[0]] = 1;
+  message[fields[1]] = 'Tom';
+  ProtobufEncoder encoder = ProtobufEncoder();
+  print(encoder.convert(message));
+  File sample = File("example.bin");
+  sample.writeAsBytesSync(bytes);
 }
 ```
 
-This library currently doesn't support dumping to YAML. You should use
-`json.encode` from `dart:convert` instead:
-
+This is decoder example.
 ```dart
-import 'dart:convert';
-import 'package:yaml/yaml.dart';
+import "dart:io";
+import 'package:pbconv/pbconv.dart';
+
+final List<Field> fields = [
+  RequiredField(1, 'ID', Type.uint32),
+  RequiredField(2, "Name", Type.string),
+  OptionalField(3, "Email", Type.string, 'tom@example.com')
+];
 
 main() {
-  var doc = loadYaml("YAML: YAML Ain't Markup Language");
-  print(json.encode(doc));
+  File file = File("example.bin");
+  var bytes = file.readAsBytesSync();
+  ProtobufDecoder decoder = ProtobufDecoder(fields);
+  DecoderMessage message = decoder.convert(bytes);
+  print(message.toString());
 }
 ```
