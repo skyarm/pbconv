@@ -1,13 +1,14 @@
-A parser for [Protobuf](https://developers.google.com/protocol-buffers/).
+A converter for [Protobuf](https://developers.google.com/protocol-buffers/).
 
-[![Pub Package](https://img.shields.io/pub/v/yaml.svg)](https://pub.dev/packages/yaml)
+[![Pub Package](https://img.shields.io/pub/v/yaml.svg)](https://pub.dev/packages/pbconv)
 [![Build Status](https://travis-ci.org/dart-lang/yaml.svg?branch=master)](https://travis-ci.org/dart-lang/yaml)
 
 Use `loadYaml` to load a single document, or `loadYamlStream` to load a
 stream of documents. For example:
 
 ```dart
-import 'package:yaml/yaml.dart';
+import 'dart:typed_data';
+import 'package:pbconv/pbconv.dart';
 
 main() {
   var doc = loadYaml("YAML: YAML Ain't Markup Language");
