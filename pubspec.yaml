@@ -1,10 +1,9 @@
 name: pbconv
-version: 0.1.0
-description: >
-  The encoder and decoder of google's protobuffer protocol.
-  Using self idl defintion, No idl compiler need.
-authors: Thomas Zhang <zhangtap@skyarm.com>
-homepage: http://github.com/skyarm/protobuf.dart
+version: 0.5.3
+author: Thomas Zhang <zhangtap@skyarm.com>
+description: >-
+  A implement of Dart:convert for [Protobuf](https://developers.google.com/protocol-buffers/).
+homepage: http://github.com/skyarm/pbconv
 environment:
   sdk: '>=2.4.0 <3.0.0'
 dependencies:

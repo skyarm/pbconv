@@ -1,6 +1,9 @@
-A converter for [Protobuf](https://developers.google.com/protocol-buffers/).
+A implement of Dart converter for [Protobuf](https://developers.google.com/protocol-buffers/).
 
+##Introduce
 Convert a message object to proto buffer binary bytes, Or convert proto buffer binary bytes to a message object.
+
+## Using
 
 This is the encoder example.
 ```dart
@@ -43,3 +46,8 @@ main() {
   print(message.toString());
 }
 ```
+
+## Features and bugs
+Please file feature requests and bugs at the [issue tracker][tracker].
+
+[tracker]: https://github.com/skyarm/pbconv/issues
