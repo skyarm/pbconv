@@ -106,7 +106,8 @@ class _AddressbookDecoder extends DecoderMessage {
 }
 
 main() {
-  File file = File("./addressbook.bin");
+  String filename = "./addressbook.bin";
+  File file = File(filename);
   //if the file isn't exists.
   if (!file.existsSync()) {
     var addressbook = Addressbook();
@@ -122,13 +123,24 @@ main() {
     var bytes = encoder.convert(Addressbook.createEncoder(addressbook));
 
     file.writeAsBytesSync(bytes);
+    print("Now the binary file $filename has been created.");
   } else {
     var bytes = file.readAsBytesSync();
     print(bytes);
     ProtobufDecoder decoder = ProtobufDecoder(Addressbook.fields);
-    DecoderMessage decoderMessage = decoder.convert(bytes);
+    DecoderMessage message = decoder.convert(bytes);
     //decoderMessage.toString() return XML debug message, but the message hasn't root element.
     //it is used for debug only.
-    print(decoderMessage.toString());
+    print(message.toString());
+
+    for (var person in message[Addressbook.fields[0]]) {
+      print("Person:");
+      print("\tID: ${person[Person.fields[0]]}");
+      print("\tName: ${person[Person.fields[1]]}");
+      print("\tEmails:");
+      for (var email in person[Person.fields[2]]) {
+        print("\t\t${email}");
+      }
+    }
   }
 }
