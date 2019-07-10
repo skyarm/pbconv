@@ -20,11 +20,11 @@ class Fragment {
   Uint8List _bytes;
 }
 
-/** 
- *   Message composed or parsed from bytes; 
-*/
+//
+//   Message composed or parsed from bytes; 
+//
 class DecoderMessage extends _Message {
-  DecoderMessage(List<Field> fields) : super(fields) {}
+  DecoderMessage(List<Field> fields) : super(fields);
 
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     while (offset < end) {

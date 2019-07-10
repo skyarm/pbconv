@@ -28,7 +28,7 @@ enum Type {
 
 class Field {
   Field(int tag, String name, Label label, Type type,
-      {dynamic value: null, Function createDecoderFunc = null,  bool packed: false}) {
+      {dynamic value, Function createDecoderFunc,  bool packed = false}) {
     _tag = tag;
     _name = name;
     _label = label;
@@ -133,38 +133,38 @@ class Field {
 
 class RequiredField extends Field {
   RequiredField(int tag, String name, Type type)
-      : super(tag, name, Label.required, type, value: null, packed: false) {}
+      : super(tag, name, Label.required, type, value: null, packed: false);
 }
 
 class RepeatedField extends Field {
   RepeatedField(int tag, String name, Type type, [packed = false])
-      : super(tag, name, Label.repeated, type, value: null, packed: packed) {}
+      : super(tag, name, Label.repeated, type, value: null, packed: packed);
 }
 
 class OptionalField extends Field {
   OptionalField(int tag, String name, Type type, [dynamic value = null])
-      : super(tag, name, Label.optional, type, value: value, packed: false) {}
+      : super(tag, name, Label.optional, type, value: value, packed: false);
 }
 
 class MessageField extends Field {
   MessageField(int tag, String name, Label label, List<Field> fields)
-      : super(tag, name, label, Type.message, value: fields, packed: false) {}
+      : super(tag, name, label, Type.message, value: fields, packed: false);
 }
 
 class RequiredMessage extends Field {
   RequiredMessage(int tag, String name, List<Field> fields)
       : super(tag, name, Label.required, Type.message,
-            value: fields, packed: false) {}
+            value: fields, packed: false);
 }
 
 class OptionalMessage extends Field {
   OptionalMessage(int tag, String name, List<Field> fields)
       : super(tag, name, Label.optional, Type.message,
-            value: fields, packed: false) {}
+            value: fields, packed: false);
 }
 
 class RepeatedMessage extends Field {
   RepeatedMessage(int tag, String name, List<Field> fields)
       : super(tag, name, Label.repeated, Type.message,
-            value: fields, packed: false) {}
+            value: fields, packed: false);
 }

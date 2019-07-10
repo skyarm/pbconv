@@ -11,5 +11,3 @@ part "message.dart";
 part "encoder.dart";
 part "decoder.dart";
 part "extends.dart";
-
-

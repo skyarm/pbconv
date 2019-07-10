@@ -18,25 +18,25 @@ class RequiredTimestamp extends Field {
   RequiredTimestamp(int tag, String name)
       : super(tag, name, Label.required, Type.message,
             value: Timestamp._fields,
-            createDecoderFunc: Timestamp.createDecoder) {}
+            createDecoderFunc: Timestamp.createDecoder);
 }
 
 class OptionalTimestamp extends Field {
   OptionalTimestamp(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
             value: Timestamp._fields,
-            createDecoderFunc: Timestamp.createDecoder) {}
+            createDecoderFunc: Timestamp.createDecoder);
 }
 
 class RepeatedTimestamp extends Field {
   RepeatedTimestamp(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
             value: Timestamp._fields,
-            createDecoderFunc: Timestamp.createDecoder) {}
+            createDecoderFunc: Timestamp.createDecoder);
 }
 
 class _TimestampEncoder extends EncoderMessage {
-  _TimestampEncoder([DateTime value = null]) : super(Timestamp._fields) {
+  _TimestampEncoder([DateTime value]) : super(Timestamp._fields) {
     if (value == null) {
       value = DateTime.now();
     }
@@ -51,8 +51,7 @@ class _TimestampEncoder extends EncoderMessage {
 }
 
 class _TimestampDecoder extends DecoderMessage {
-  _TimestampDecoder() : super(Timestamp._fields) {
-  }
+  _TimestampDecoder() : super(Timestamp._fields);
 
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     super.decode(parent, bytes, offset, end);

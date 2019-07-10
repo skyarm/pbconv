@@ -14,6 +14,6 @@ main() {
   ProtobufEncoder encoder = ProtobufEncoder();
   var bytes = encoder.convert(message);
   print(bytes);
-  File sample = File("example.bin");
-  sample.writeAsBytesSync(bytes);
+  File file = File("example.bin");
+  file.writeAsBytesSync(bytes);
 }

@@ -1,10 +1,10 @@
 part of pbconv;
 
-/** 
- *   Message composed or parsed from bytes; 
-*/
+//
+//  Message composed or parsed from bytes;
+//
 class EncoderMessage extends _Message {
-  EncoderMessage(List<Field> fields) : super(fields) {}
+  EncoderMessage(List<Field> fields) : super(fields);
 
   Stream<Uint8List> encode(_BytesPager pager) async* {
     assert(review());
@@ -24,8 +24,7 @@ class EncoderMessage extends _Message {
 } //class end;
 
 class ProtobufEncoder extends Converter<EncoderMessage, Uint8List> {
-  ProtobufEncoder() {
-  }
+  ProtobufEncoder();
 
   Stream<Uint8List> bind(Stream<_Message> stream) {
     return super.bind(stream);
@@ -39,8 +38,7 @@ class ProtobufEncoder extends Converter<EncoderMessage, Uint8List> {
     return bytesList;
   }
 
-  Stream<Uint8List> _encode(
-      _BytesPager pager, EncoderMessage message) async* {
+  Stream<Uint8List> _encode(_BytesPager pager, EncoderMessage message) async* {
     yield* message.encode(pager);
     yield* pager.commit();
   }
@@ -62,7 +60,8 @@ class ProtobufEncoder extends Converter<EncoderMessage, Uint8List> {
     return result;
   }
 
-  ChunkedConversionSink<EncoderMessage> startChunkedConversion(Sink<Uint8List> sink) {
+  ChunkedConversionSink<EncoderMessage> startChunkedConversion(
+      Sink<Uint8List> sink) {
     return null;
   }
 

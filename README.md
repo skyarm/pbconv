@@ -22,8 +22,8 @@ main() {
   message[fields[1]] = 'Tom';
   ProtobufEncoder encoder = ProtobufEncoder();
   print(encoder.convert(message));
-  File sample = File("example.bin");
-  sample.writeAsBytesSync(bytes);
+  File file = File("example.bin");
+  file.writeAsBytesSync(bytes);
 }
 ```
 
