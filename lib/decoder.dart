@@ -250,7 +250,7 @@ class DecoderMessage extends _Message {
             throw FormatException("Failed to decode boolean, Bad length",
                 field._name, field._tag);
           }
-          _addBool(field, _decodeBoolean(bytes, offset, count));
+          _addBool(field, _decodeBoolean(bytes, offset, length));
         }
         break;
       case Type.enumerated:
