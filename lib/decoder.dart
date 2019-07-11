@@ -102,7 +102,7 @@ class DecoderMessage extends _Message {
           throw FormatException(
               "Failed to decode boolean, Bad wire", field._name, field._tag);
         }
-        this[field] = _decodeBoolean(bytes, offset, length);
+        _setBool(field, _decodeBoolean(bytes, offset, length));
         break;
       case Type.enumerated:
       case Type.uint32:
@@ -110,7 +110,7 @@ class DecoderMessage extends _Message {
           throw FormatException("Failed to decode varint32 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _decodeUint32(bytes, offset, length);
+        _setNumber(field, _decodeUint32(bytes, offset, length));
         break;
       case Type.int32:
         if (wire != _Wire.varint.index) {
@@ -118,35 +118,35 @@ class DecoderMessage extends _Message {
               field._name, field._tag);
         }
         //FIMEME: only as Uint64 can get right value.
-        this[field] = _decodeUint64(bytes, offset, length);
+         _setNumber(field, _decodeUint64(bytes, offset, length));
         break;
       case Type.sint32:
         if (wire != _Wire.varint.index) {
           throw FormatException("Failed to decode varint32 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _unzigzag32(_decodeUint32(bytes, offset, length));
+        _setNumber(field, _unzigzag32(_decodeUint32(bytes, offset, length)));
         break;
       case Type.fixed32:
         if (wire != _Wire.num32.index) {
           throw FormatException("Failed to decode fixed32 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _decodeFixed32(bytes, offset, length);
+        _setNumber(field, _decodeFixed32(bytes, offset, length));
         break;
       case Type.sfixed32:
         if (wire != _Wire.num32.index) {
           throw FormatException("Failed to decode sfixed32 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _decodeSfixed32(bytes, offset, length);
+        _setNumber(field, _decodeSfixed32(bytes, offset, length));
         break;
       case Type.float32:
         if (wire != _Wire.num32.index) {
           throw FormatException("Failed to decode float32 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _decodeFloat32(bytes, offset, length);
+        _setNumber(field, _decodeFloat32(bytes, offset, length));
         break;
       case Type.int64:
       case Type.uint64:
@@ -154,63 +154,63 @@ class DecoderMessage extends _Message {
           throw FormatException("Failed to decode varint64 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _decodeUint64(bytes, offset, length);
+        _setNumber(field, _decodeUint64(bytes, offset, length));
         break;
       case Type.sint64:
         if (wire != _Wire.varint.index) {
           throw FormatException("Failed to decode varint64 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _unzigzag64(_decodeUint64(bytes, offset, length));
+        _setNumber(field, _unzigzag64(_decodeUint64(bytes, offset, length)));
         break;
       case Type.fixed64:
         if (wire != _Wire.num64.index) {
           throw FormatException("Failed to decode fixed64 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _decodeFixed64(bytes, offset, length);
+        _setNumber(field, _decodeFixed64(bytes, offset, length));
         break;
       case Type.sfixed64:
         if (wire != _Wire.num64.index) {
           throw FormatException("Failed to decode sfixed64 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _decodeSfixed64(bytes, offset, length);
+        _setNumber(field, _decodeSfixed64(bytes, offset, length));
         break;
       case Type.float64:
         if (wire != _Wire.num64.index) {
           throw FormatException("Failed to decode float64 number, Bad wire",
               field._name, field._tag);
         }
-        this[field] = _decodeFloat64(bytes, offset, length);
+        _setNumber(field, _decodeFloat64(bytes, offset, length));
         break;
       case Type.string:
         if (wire != _Wire.length.index) {
           throw FormatException(
               "Failed to decode string, Bad wire", field._name, field._tag);
         }
-        this[field] = _decodeString(bytes, offset, length);
+        _setString(field, _decodeString(bytes, offset, length));
         break;
       case Type.bytes:
         if (wire != _Wire.length.index) {
           throw FormatException(
               "Failed to decode bytes, Bad wire", field._name, field._tag);
         }
-        this[field] = _decodeBytes(bytes, offset, length);
+        _setBytes(field, _decodeBytes(bytes, offset, length));
         break;
       case Type.message:
         if (wire != _Wire.length.index) {
           throw FormatException(
               "Failed to decode message, Bad wire", field._name, field._tag);
         }
-        if (field._createDecoderFunc == null) {
+        if (field._func == null) {
           var message = DecoderMessage(field._value as List<Field>);
           message.decode(field, bytes, offset, offset + length);
-          this[field] = message;
+          _setMessage(field, message);
         } else {
-          var message = field._createDecoderFunc();
+          var message = field._func();
           message.decode(field, bytes, offset, offset + length);
-          this[field] = message;
+          _setMessage(field, message);
         }
         break;
       default:
@@ -240,15 +240,13 @@ class DecoderMessage extends _Message {
             values.add(_decodeBoolean(bytes, offset, count));
             offset += count;
           }
-          this[field] = values;
+          _setRepeatedBool(field, values);
         } else {
           if (wire != _Wire.varint.index) {
             throw FormatException("Failed to decode repeated boolean, Bad wire",
                 field._name, field._tag);
           }
-          int count = _varintLength(bytes, offset, end - offset, 1);
-          //length always is 1.
-          if (count != 1 || offset + count > end) {
+          if (length != 1) {
             throw FormatException("Failed to decode boolean, Bad length",
                 field._name, field._tag);
           }
@@ -285,24 +283,19 @@ class DecoderMessage extends _Message {
             }
             offset += count;
           }
-          this[field] = values;
+          _setRepeatedNumber(field, values);
         } else {
           if (wire != _Wire.varint.index) {
             throw FormatException("Failed to decode repeated boolean, Bad wire",
                 field._name, field._tag);
           }
-          int count = _varintLength(bytes, offset, end - offset, 1);
-          if (count == -1 || offset + count > end) {
-            throw FormatException("Failed to decode boolean, Bad length",
-                field._name, field._tag);
-          }
           if (field._type == Type.sint32) {
-            _addNumber(field, _unzigzag32(_decodeUint32(bytes, offset, count)));
+            _addNumber(field, _unzigzag32(_decodeUint32(bytes, offset, length)));
           } else if (field._type == Type.int32) {
             //FIMEME: only as Uint64 can get right value.
-            _addNumber(field, _decodeUint64(bytes, offset, count));
+            _addNumber(field, _decodeUint64(bytes, offset, length));
           } else {
-            _addNumber(field, _decodeUint32(bytes, offset, count));
+            _addNumber(field, _decodeUint32(bytes, offset, length));
           }
         }
         break;
@@ -334,7 +327,7 @@ class DecoderMessage extends _Message {
             }
             offset += count;
           }
-          this[field] = values;
+          _setRepeatedNumber(field, values);
         } else {
           if (wire != _Wire.num32.index) {
             throw FormatException(
@@ -342,19 +335,12 @@ class DecoderMessage extends _Message {
                 field._name,
                 field._tag);
           }
-          int count = 4;
-          if (offset + count > end) {
-            throw FormatException(
-                "Failed to decode packed fixed32 number, bad length",
-                field._name,
-                field._tag);
-          }
           if (field._type == Type.fixed32) {
-            _addNumber(field, _decodeFixed32(bytes, offset, count));
+            _addNumber(field, _decodeFixed32(bytes, offset, length));
           } else if (field._type == Type.sfixed32) {
-            _addNumber(field, _decodeSfixed32(bytes, offset, count));
+            _addNumber(field, _decodeSfixed32(bytes, offset, length));
           } else {
-            _addNumber(field, _decodeFloat32(bytes, offset, count));
+            _addNumber(field, _decodeFloat32(bytes, offset, length));
           }
         }
         break;
@@ -384,7 +370,7 @@ class DecoderMessage extends _Message {
             }
             offset += count;
           }
-          this[field] = values;
+          _setRepeatedNumber(field, values);
         } else {
           if (wire != _Wire.varint.index) {
             throw FormatException(
@@ -392,17 +378,10 @@ class DecoderMessage extends _Message {
                 field._name,
                 field._tag);
           }
-          int count = _varintLength(bytes, offset, end - offset, 10);
-          if (count == -1 || offset + count > end) {
-            throw FormatException(
-                "Failed to decode packed varint64 number, Bad length",
-                field._name,
-                field._tag);
-          }
           if (field._type == Type.sint64) {
-            _addNumber(field, _unzigzag64(_decodeUint64(bytes, offset, count)));
+            _addNumber(field, _unzigzag64(_decodeUint64(bytes, offset, length)));
           } else {
-            _addNumber(field, _decodeUint64(bytes, offset, count));
+            _addNumber(field, _decodeUint64(bytes, offset, length));
           }
         }
         break;
@@ -420,7 +399,7 @@ class DecoderMessage extends _Message {
           while (offset < end) {
             if (offset + count > end) {
               throw FormatException(
-                  "Failed to decode packed fixed64 number, Bad length",
+                  "Failed to decode packed fixed32 number, bad length",
                   field._name,
                   field._tag);
             }
@@ -433,7 +412,7 @@ class DecoderMessage extends _Message {
             }
             offset += count;
           }
-          this[field] = values;
+          _setRepeatedNumber(field, values);
         } else {
           if (wire != _Wire.num64.index) {
             throw FormatException(
@@ -441,19 +420,12 @@ class DecoderMessage extends _Message {
                 field._name,
                 field._tag);
           }
-          int count = 8;
-          if (offset + count > end) {
-            throw FormatException(
-                "Failed to decode packed fixed64 number, bad length",
-                field._name,
-                field._tag);
-          }
           if (field._type == Type.fixed64) {
-            _addNumber(field, _decodeFixed64(bytes, offset, count));
+            _addNumber(field, _decodeFixed64(bytes, offset, length));
           } else if (field._type == Type.sfixed64) {
-            _addNumber(field, _decodeSfixed64(bytes, offset, count));
+            _addNumber(field, _decodeSfixed64(bytes, offset, length));
           } else {
-            _addNumber(field, _decodeFloat64(bytes, offset, count));
+            _addNumber(field, _decodeFloat64(bytes, offset, length));
           }
         }
         break;
@@ -479,12 +451,12 @@ class DecoderMessage extends _Message {
           throw FormatException("Failed to decode repeated message, Bad wire",
               field._name, field._tag);
         }
-        if (field._createDecoderFunc == null) {
+        if (field._func == null) {
           var message = DecoderMessage(field._value as List<Field>);
           message.decode(field, bytes, offset, offset + length);
           _addMessage(field, message);
         } else {
-          var message = field._createDecoderFunc();
+          var message = field._func();
           message.decode(field, bytes, offset, offset + length);
           _addMessage(field, message as _Message);
         }

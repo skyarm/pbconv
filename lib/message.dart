@@ -92,7 +92,7 @@ abstract class _Message {
           var node = result as _RepeatedMessageNode;
           return node == null ? null : node._values;
         } else {
-          if (field._createDecoderFunc == null) {
+          if (field._func == null) {
             var node = result as _MessageNode;
             return node == null ? null : node._value;
           } else {
@@ -170,6 +170,27 @@ abstract class _Message {
     }
   }
 
+  void _setBool(Field field, bool value) {
+    var node = _nodes[field] as _BooleanNode;
+    if (node == null) {
+      node = _BooleanNode(field, value);
+      _nodes[field] = node;
+    } else {
+      throw FormatException("Duplicated node", field._name, field._tag);
+    }
+  }
+
+  void _setRepeatedBool(Field field, List<bool> values) {
+    var node = _nodes[field] as _RepeatedBooleanNode;
+    if (node == null) {
+      node = _RepeatedBooleanNode(field, List<bool>());
+      _nodes[field] = node;
+    } else {
+      throw FormatException("Duplicated node", field._name, field._tag);
+    }
+  }
+
+
   void _addBool(Field field, bool value) {
     var node = _nodes[field] as _RepeatedBooleanNode;
     if (node == null) {
@@ -179,6 +200,27 @@ abstract class _Message {
     node._values.add(value);
   }
 
+  void _setNumber(Field field, num value) {
+    var node = _nodes[field] as _NumberNode;
+    if (node == null) {
+      node = _NumberNode(field, value);
+      _nodes[field] = node;
+    } else {
+      throw FormatException("Duplicated node", field._name, field._tag);
+    }
+  }
+
+  void _setRepeatedNumber(Field field, List<num> values) {
+    var node = _nodes[field] as _RepeatedNumberNode;
+    if (node == null) {
+      node = _RepeatedNumberNode(field, List<num>());
+      _nodes[field] = node;
+    } else {
+      throw FormatException("Duplicated node", field._name, field._tag);
+    }
+  }
+  
+
   void _addNumber(Field field, num value) {
     var node = _nodes[field] as _RepeatedNumberNode;
     if (node == null) {
@@ -186,6 +228,17 @@ abstract class _Message {
       _nodes[field] = node;
     }
     node._values.add(value);
+  }
+
+
+  void _setString(Field field, String value) {
+    var node = _nodes[field] as _StringNode;
+    if (node == null) {
+      node = _StringNode(field, value);
+      _nodes[field] = node;
+    } else {
+      throw FormatException("Duplicated node", field._name, field._tag);
+    }
   }
 
   void _addString(Field field, String value) {
@@ -197,6 +250,16 @@ abstract class _Message {
     node._values.add(value);
   }
 
+  void _setBytes(Field field, Uint8List value) {
+    var node = _nodes[field] as _BytesNode;
+    if (node == null) {
+      node = _BytesNode(field, value);
+      _nodes[field] = node;
+    } else {
+      throw FormatException("Duplicated node", field._name, field._tag);
+    }
+  }
+
   void _addBytes(Field field, Uint8List value) {
     var node = _nodes[field] as _RepeatedBytesNode;
     if (node == null) {
@@ -205,6 +268,17 @@ abstract class _Message {
     }
     node._values.add(value);
   }
+
+  void _setMessage(Field field, _Message value) {
+    var node = _nodes[field] as _MessageNode;
+    if (node == null) {
+      node = _MessageNode(field, value);
+      _nodes[field] = node;
+    } else {
+      throw FormatException("Duplicated node", field._name, field._tag);
+    }
+  }
+
 
   void _addMessage(Field field, _Message value) {
     var node = _nodes[field] as _RepeatedMessageNode;

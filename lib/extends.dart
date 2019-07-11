@@ -18,21 +18,21 @@ class RequiredTimestamp extends Field {
   RequiredTimestamp(int tag, String name)
       : super(tag, name, Label.required, Type.message,
             value: Timestamp._fields,
-            createDecoderFunc: Timestamp.createDecoder);
+            func: Timestamp.createDecoder);
 }
 
 class OptionalTimestamp extends Field {
   OptionalTimestamp(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
             value: Timestamp._fields,
-            createDecoderFunc: Timestamp.createDecoder);
+            func: Timestamp.createDecoder);
 }
 
 class RepeatedTimestamp extends Field {
   RepeatedTimestamp(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
             value: Timestamp._fields,
-            createDecoderFunc: Timestamp.createDecoder);
+            func: Timestamp.createDecoder);
 }
 
 class _TimestampEncoder extends EncoderMessage {
@@ -90,19 +90,19 @@ class Timespan {
 class RequiredTimespan extends Field {
   RequiredTimespan(int tag, String name)
       : super(tag, name, Label.required, Type.message,
-            value: Timespan.fields, createDecoderFunc: Timespan.createDecoder);
+            value: Timespan.fields, func: Timespan.createDecoder);
 }
 
 class OptionalTimespan extends Field {
   OptionalTimespan(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
-            value: Timespan.fields, createDecoderFunc: Timespan.createDecoder);
+            value: Timespan.fields, func: Timespan.createDecoder);
 }
 
 class RepeatedTimespan extends Field {
   RepeatedTimespan(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Timespan.fields, createDecoderFunc: Timespan.createDecoder);
+            value: Timespan.fields, func: Timespan.createDecoder);
 }
 
 class _TimespanEncoder extends EncoderMessage {

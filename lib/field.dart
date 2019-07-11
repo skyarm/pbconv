@@ -26,16 +26,18 @@ enum Type {
   message
 }
 
+typedef CreateDecoderFunc = DecoderMessage Function();
+
 class Field {
   Field(int tag, String name, Label label, Type type,
-      {dynamic value, Function createDecoderFunc, bool packed = false}) {
+      {dynamic value, CreateDecoderFunc func, bool packed = false}) {
     _tag = tag;
     _name = name;
     _label = label;
     _type = type;
     _value = value;
     _packed = packed;
-    _createDecoderFunc = createDecoderFunc;
+    _func = func;
     assert(_review());
   }
 
@@ -112,8 +114,9 @@ class Field {
         }
       }
     }
-    if (_createDecoderFunc != null) {
+    if (_func != null) {
       if (_type != Type.message) {
+        //FIXME:Can decoderFunc be used to other type?
         return false;
       }
     }
@@ -126,7 +129,7 @@ class Field {
   Type _type;
   dynamic _value;
   bool _packed;
-  Function _createDecoderFunc;
+  CreateDecoderFunc _func;
 
   get hashCode => _tag;
   bool operator ==(dynamic other) => this.hashCode == other.hashCode;

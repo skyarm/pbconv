@@ -57,7 +57,7 @@ class _PersonDecoder extends DecoderMessage {
 class RepeatedPersonField extends Field {
   RepeatedPersonField(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Person.fields, createDecoderFunc: Person.createDecoder);
+            value: Person.fields, func: Person.createDecoder);
 }
 
 //Addressbook

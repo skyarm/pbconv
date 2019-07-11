@@ -30,14 +30,14 @@ class RequiredCoordinate extends Field {
   RequiredCoordinate(int tag, String name)
       : super(tag, name, Label.required, Type.message,
             value: Coordinate.fields,
-            createDecoderFunc: Coordinate.createDecoder);
+            func: Coordinate.createDecoder);
 }
 
 class OptionalCoordinate extends Field {
   OptionalCoordinate(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
             value: Coordinate.fields,
-            createDecoderFunc: Coordinate.createDecoder);
+            func: Coordinate.createDecoder);
 }
 
 class CoordinateEncoder extends EncoderMessage {
