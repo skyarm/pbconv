@@ -1,9 +1,9 @@
 library pbconv;
 
-import "dart:convert";
-import "dart:typed_data";
 import "dart:cli";
 import "dart:collection" show HashMap;
+import "dart:convert";
+import "dart:typed_data";
 
 part "field.dart";
 part "node.dart";

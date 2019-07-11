@@ -22,6 +22,7 @@ class Person {
   static DecoderMessage createDecoder() {
     return _PersonDecoder();
   }
+
   //Declare the Person message fileds, include tag, name and type.
   static final List<Field> fields = [
     RequiredField(1, "ID", Type.uint32),
@@ -39,12 +40,13 @@ class _PersonEncoder extends EncoderMessage {
 }
 
 class _PersonDecoder extends DecoderMessage {
-  _PersonDecoder() : super(Person.fields) {}
+  _PersonDecoder() : super(Person.fields);
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     super.decode(parent, bytes, offset, end);
-
     _person = Person(
-        this[Person.fields[0]], this[Person.fields[1]], this[Person.fields[2]]);
+        this[Person.fields[0]] as int,
+        this[Person.fields[1]] as String,
+        this[Person.fields[2]] as List<String>);
   }
 
   Person get realObject => _person;
@@ -55,7 +57,7 @@ class _PersonDecoder extends DecoderMessage {
 class RepeatedPersonField extends Field {
   RepeatedPersonField(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Person.fields, createDecoderFunc: Person.createDecoder) {}
+            value: Person.fields, createDecoderFunc: Person.createDecoder);
 }
 
 //Addressbook
@@ -71,9 +73,11 @@ class Addressbook {
   static EncoderMessage createEncoder(Addressbook addressbook) {
     return _AddressbookEncoder(addressbook);
   }
+
   static DecoderMessage createDecoder() {
     return _AddressbookDecoder();
   }
+
   static final List<Field> fields = [RepeatedPersonField(1, "Person")];
 
   List<Person> _persons;
@@ -84,7 +88,7 @@ class _AddressbookEncoder extends EncoderMessage {
   _AddressbookEncoder(Addressbook addressbook) : super(Addressbook.fields) {
     var encoders = List<_PersonEncoder>();
     for (var person in addressbook._persons) {
-      encoders.add(Person.createEncoder(person));
+      encoders.add(Person.createEncoder(person) as _PersonEncoder);
     }
     this[Addressbook.fields[0]] = encoders;
   }
@@ -97,7 +101,7 @@ class _AddressbookDecoder extends DecoderMessage {
   }
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     super.decode(parent, bytes, offset, end);
-    _addressbook._persons.add(this[Addressbook.fields[0]]);
+    _addressbook._persons.add(this[Addressbook.fields[0]] as Person);
   }
 
   Addressbook get realObject => _addressbook;
@@ -128,7 +132,7 @@ main() {
     var bytes = file.readAsBytesSync();
     print(bytes);
     ProtobufDecoder decoder = ProtobufDecoder(Addressbook.fields);
-    DecoderMessage message = decoder.convert(bytes);
+    DecoderMessage message = decoder.convert(bytes as Uint8List);
     //decoderMessage.toString() return XML debug message, but the message hasn't root element.
     //it is used for debug only.
     print(message.toString());
@@ -139,7 +143,7 @@ main() {
       print("\tName: ${person[Person.fields[1]]}");
       print("\tEmails:");
       for (var email in person[Person.fields[2]]) {
-        print("\t\t${email}");
+        print("\t\t$email");
       }
     }
   }

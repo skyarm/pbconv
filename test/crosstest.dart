@@ -1,3 +1,4 @@
+import 'dart:core';
 import "dart:io";
 import 'dart:typed_data';
 
@@ -28,14 +29,14 @@ class RequiredCoordinate extends Field {
   RequiredCoordinate(int tag, String name)
       : super(tag, name, Label.required, Type.message,
             value: Coordinate.fields,
-            createDecoderFunc: Coordinate.createDecoder) {}
+            createDecoderFunc: Coordinate.createDecoder);
 }
 
 class OptionalCoordinate extends Field {
   OptionalCoordinate(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
             value: Coordinate.fields,
-            createDecoderFunc: Coordinate.createDecoder) {}
+            createDecoderFunc: Coordinate.createDecoder);
 }
 
 class CoordinateEncoder extends EncoderMessage {
@@ -47,12 +48,11 @@ class CoordinateEncoder extends EncoderMessage {
 }
 
 class CoordinateDecoder extends DecoderMessage {
-  CoordinateDecoder():super(Coordinate.fields) {
-  }
+  CoordinateDecoder():super(Coordinate.fields);
 
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     super.decode(parent, bytes, offset, end);
-    _coordinate = Coordinate(this[Coordinate.fields[0]], this[Coordinate.fields[1]]);
+    _coordinate = Coordinate(this[Coordinate.fields[0]] as double, this[Coordinate.fields[1]] as double);
   }
   Coordinate get realObject => _coordinate;
   Coordinate _coordinate;
@@ -110,7 +110,7 @@ main() {
     var bytes = sample.readAsBytesSync();
     print(bytes);
     ProtobufDecoder decoder = ProtobufDecoder(rootFileds);
-    DecoderMessage decoderMessage = decoder.convert(bytes);
+    DecoderMessage decoderMessage = decoder.convert(bytes as Uint8List);
     print(decoderMessage.toString());
 
     print("TimerStamp: ${decoderMessage[rootFileds[4]].year}, ${decoderMessage[rootFileds[4]].month}");

@@ -1,4 +1,5 @@
 import "dart:io";
+import 'dart:typed_data';
 import 'package:pbconv/pbconv.dart';
 
 final List<Field> fields = [
@@ -13,7 +14,7 @@ main() {
     var bytes = file.readAsBytesSync();
     print(bytes);
     ProtobufDecoder decoder = ProtobufDecoder(fields);
-    DecoderMessage message = decoder.convert(bytes);
+    DecoderMessage message = decoder.convert(bytes as Uint8List);
     print(message.toString());
   } else {
     var message = EncoderMessage(fields);

@@ -129,6 +129,7 @@ class Field {
   Function _createDecoderFunc;
 
   get hashCode => _tag;
+  bool operator==(dynamic other) => this.hashCode == other.hashCode;
 }
 
 class RequiredField extends Field {
@@ -137,12 +138,12 @@ class RequiredField extends Field {
 }
 
 class RepeatedField extends Field {
-  RepeatedField(int tag, String name, Type type, [packed = false])
+  RepeatedField(int tag, String name, Type type, [bool packed = false])
       : super(tag, name, Label.repeated, type, value: null, packed: packed);
 }
 
 class OptionalField extends Field {
-  OptionalField(int tag, String name, Type type, [dynamic value = null])
+  OptionalField(int tag, String name, Type type, [dynamic value])
       : super(tag, name, Label.optional, type, value: value, packed: false);
 }
 

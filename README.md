@@ -1,10 +1,10 @@
 A implement of Dart converter for [Protobuf](https://developers.google.com/protocol-buffers/).
 
 ## Introduce
-Convert a message object to proto buffer binary bytes, Or convert proto buffer binary bytes to a message object.
 
-## Using
+Convert a message object to *proto buffer* binary bytes, Or convert proto buffer binary bytes to a message object.
 
+## Examples
 This is the encoder example.
 ```dart
 import "dart:io";

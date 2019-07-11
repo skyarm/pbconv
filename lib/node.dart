@@ -7,8 +7,8 @@ enum _Wire {
   varint, //variable length integer, etc uint32, sint32 uint64 sint64.
   num64, //fixed 64bit number, etc double, fixed64, sfixed64.
   length,
-  start_group,
-  end_group,
+  startGroup,
+  endGroup,
   num32
 }
 
@@ -16,7 +16,7 @@ class _BytesPager {
   _BytesPager(int size) {
     _offset = 0;
     _size = size;
-    _bytes = new Uint8List(_size);
+    _bytes = Uint8List(_size);
   }
 
   Stream<Uint8List> commit() async* {
@@ -232,7 +232,7 @@ abstract class _Node {
   }
 
   Stream<Uint8List> encodeString(_BytesPager pager, String value) async* {
-    Uint8List bytes = utf8.encode(value);
+    Uint8List bytes = utf8.encode(value) as Uint8List;
     yield* encodeUint32(pager, bytes.length);
     yield* pager.addBytes(bytes);
   }
@@ -460,7 +460,7 @@ class _RepeatedNumberNode extends _Node {
 
       //Copy the temp bytes to the pager;
       yield* pager.addBytesList(bytesList);
-      yield* pager.addBytes(numbersPager.bytes, numbersPager.offset);
+      yield* pager.addBytes(numbersPager.bytes as Uint8List, numbersPager.offset);
       //now all the bytes are copied from stream to this stream;
     } else {
       for (var value in _values) {
@@ -615,7 +615,7 @@ class _RepeatedBytesNode extends _Node {
 
 class _TempMessageNode extends _Node {
   _TempMessageNode(Field field, _Message value) : super(field) {
-    _value = value;
+    _value = value as EncoderMessage;
   }
 
   Stream<Uint8List> encode(_BytesPager pager) async* {
@@ -643,7 +643,7 @@ class _MessageNode extends _Node {
         pager, bytesList.length * messgePager.size + messgePager.offset);
 
     yield* pager.addBytesList(bytesList);
-    yield* pager.addBytes(messgePager.bytes, messgePager.offset);
+    yield* pager.addBytes(messgePager.bytes as Uint8List, messgePager.offset);
   }
 
   String toString() {
@@ -675,7 +675,7 @@ class _RepeatedMessageNode extends _Node {
           pager, bytesList.length * messgePager.size + messgePager.offset);
 
       yield* pager.addBytesList(bytesList);
-      yield* pager.addBytes(messgePager.bytes, messgePager.offset);
+      yield* pager.addBytes(messgePager.bytes as Uint8List, messgePager.offset);
     }
   }
 

@@ -56,8 +56,8 @@ class _TimestampDecoder extends DecoderMessage {
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     super.decode(parent, bytes, offset, end);
 
-    int seconds = this[_fields[0]];
-    int nanos = this[_fields[1]];
+    int seconds = this[_fields[0]] as int;
+    int nanos = this[_fields[1]] as int;
 
     _dateTime = DateTime.fromMicrosecondsSinceEpoch(
         seconds * Duration.microsecondsPerSecond + nanos);
@@ -91,21 +91,21 @@ class RequiredTimespan extends Field {
   RequiredTimespan(int tag, String name)
       : super(tag, name, Label.required, Type.message,
             value: Timespan.fields,
-            createDecoderFunc: Timespan.createDecoder) {}
+            createDecoderFunc: Timespan.createDecoder);
 }
 
 class OptionalTimespan extends Field {
   OptionalTimespan(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
             value: Timespan.fields,
-            createDecoderFunc: Timespan.createDecoder) {}
+            createDecoderFunc: Timespan.createDecoder);
 }
 
 class RepeatedTimespan extends Field {
   RepeatedTimespan(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
             value: Timespan.fields,
-            createDecoderFunc: Timespan.createDecoder) {}
+            createDecoderFunc: Timespan.createDecoder);
 }
 
 class _TimespanEncoder extends EncoderMessage {
@@ -118,14 +118,13 @@ class _TimespanEncoder extends EncoderMessage {
 }
 
 class _TimespanDecoder extends DecoderMessage {
-  _TimespanDecoder() : super(Timespan.fields) {
-  }
+  _TimespanDecoder() : super(Timespan.fields);
 
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     super.decode(parent, bytes, offset, end);
 
-    int seconds = this[_fields[0]];
-    int nanos = this[_fields[1]];
+    int seconds = this[_fields[0]] as int;
+    int nanos = this[_fields[1]] as int;
 
     int days = seconds ~/ Duration.secondsPerDay;
     seconds -= days * Duration.secondsPerDay;

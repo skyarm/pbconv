@@ -27,7 +27,7 @@ class ProtobufEncoder extends Converter<EncoderMessage, Uint8List> {
   ProtobufEncoder();
 
   Stream<Uint8List> bind(Stream<_Message> stream) {
-    return super.bind(stream);
+    return super.bind(stream as Stream<EncoderMessage>);
   }
 
   Future<List<Uint8List>> _pull(Stream<Uint8List> stream) async {

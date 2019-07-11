@@ -85,7 +85,7 @@ class DecoderMessage extends _Message {
             assert(false);
         }
       } else {
-        var frag = Fragment(tag, wire, bytes.getRange(offset, offset + length));
+        var frag = Fragment(tag, wire, bytes.getRange(offset, offset + length) as Uint8List);
         _fragments.add(frag);
       }
       offset += length;
@@ -203,7 +203,7 @@ class DecoderMessage extends _Message {
               "Failed to decode message, Bad wire", field._name, field._tag);
         }
         if (field._createDecoderFunc == null) {
-          var message = DecoderMessage(field._value);
+          var message = DecoderMessage(field._value as List<Field>);
           message.decode(field, bytes, offset, offset + length);
           this[field] = message;
         } else {
@@ -479,13 +479,13 @@ class DecoderMessage extends _Message {
               field._name, field._tag);
         }
         if (field._createDecoderFunc == null) {
-          var message = DecoderMessage(field._value);
+          var message = DecoderMessage(field._value as List<Field>);
           message.decode(field, bytes, offset, offset + length);
           _addMessage(field, message);
         } else {
           var message = field._createDecoderFunc();
           message.decode(field, bytes, offset, offset + length);
-          _addMessage(field, message);
+          _addMessage(field, message as _Message);
         }
         break;
 
@@ -682,7 +682,6 @@ class DecoderMessage extends _Message {
     for (int index = 0; index < length; index++) {
       value[index] = bytes[offset + index];
     }
-    ;
     return value;
   }
 
@@ -705,7 +704,7 @@ class ProtobufDecoder extends Converter<Uint8List, _Message> {
   }
 
   ChunkedConversionSink<Uint8List> startChunkedConversion(Sink<_Message> sink) {
-    return super.startChunkedConversion(sink);
+    return super.startChunkedConversion(sink) as ChunkedConversionSink<Uint8List>;
   }
 
   Converter<Uint8List, T> fuse<T>(Converter<_Message, T> other) {

@@ -25,10 +25,10 @@ abstract class _Message {
     switch (field._type) {
       case Type.boolean:
         if (field._label == Label.repeated) {
-          _RepeatedBooleanNode node = result;
+          var node = result as _RepeatedBooleanNode;
           return node == null ? null : node._values;
         } else {
-          _BooleanNode node = result;
+          var node = result as _BooleanNode;
           if (node == null && field._label == Label.optional) {
             return field._value;
           } else {
@@ -50,10 +50,10 @@ abstract class _Message {
       case Type.uint32:
       case Type.uint64:
         if (field._label == Label.repeated) {
-          _RepeatedNumberNode node = result;
+          var node = result as _RepeatedNumberNode;
           return node == null ? null : node._values;
         } else {
-          _NumberNode node = result;
+          var node = result as _NumberNode;
           if (node == null && field._label == Label.optional) {
             return field._value;
           } else {
@@ -63,10 +63,10 @@ abstract class _Message {
         break;
       case Type.string:
         if (field._label == Label.repeated) {
-          _RepeatedStringNode node = result;
+          var node = result as _RepeatedStringNode;
           return node == null ? null : node._values;
         } else {
-          _StringNode node = result;
+          var node = result as _StringNode;
           if (node == null && field._label == Label.optional) {
             return field._value;
           } else {
@@ -76,10 +76,10 @@ abstract class _Message {
         break;
       case Type.bytes:
         if (field._label == Label.repeated) {
-          _RepeatedBytesNode node = result;
+          var node = result as _RepeatedBytesNode;
           return node == null ? null : node._values;
         } else {
-          _BytesNode node = result;
+          var node = result as _BytesNode;
           if (node == null && field._label == Label.optional) {
             return field._value;
           } else {
@@ -89,14 +89,14 @@ abstract class _Message {
         break;
       case Type.message:
         if (field._label == Label.repeated) {
-          _RepeatedMessageNode node = result;
+          var node = result as _RepeatedMessageNode;
           return node == null ? null : node._values;
         } else {
           if (field._createDecoderFunc == null) {
-            _MessageNode node = result;
+            var node = result as _MessageNode;
             return node == null ? null : node._value;
           } else {
-            _MessageNode node = result;
+            var node = result as _MessageNode;
             return node == null ? null : node._value.realObject;
           }
         }
@@ -111,10 +111,10 @@ abstract class _Message {
       case Type.boolean:
         if (field._label == Label.repeated) {
           assert(value is List<bool>);
-          _nodes[field] = _RepeatedBooleanNode(field, value);
+          _nodes[field] = _RepeatedBooleanNode(field, value as List<bool>);
         } else {
           assert(value is bool);
-          _nodes[field] = _BooleanNode(field, value);
+          _nodes[field] = _BooleanNode(field, value as bool);
         }
         break;
       case Type.enumerated:
@@ -132,37 +132,37 @@ abstract class _Message {
       case Type.uint64:
         if (field._label == Label.repeated) {
           assert(value is List<num>);
-          _nodes[field] = _RepeatedNumberNode(field, value);
+          _nodes[field] = _RepeatedNumberNode(field, value  as List<num>);
         } else {
           assert(value is num);
-          _nodes[field] = _NumberNode(field, value);
+          _nodes[field] = _NumberNode(field, value as num);
         }
         break;
       case Type.string:
         if (field._label == Label.repeated) {
           assert(value is List<String>);
-          _nodes[field] = _RepeatedStringNode(field, value);
+          _nodes[field] = _RepeatedStringNode(field, value as List<String>);
         } else {
           assert(value is String);
-          _nodes[field] = _StringNode(field, value);
+          _nodes[field] = _StringNode(field, value as String);
         }
         break;
       case Type.bytes:
         if (field._label == Label.repeated) {
           assert(value is List<Uint8List>);
-          _nodes[field] = _RepeatedBytesNode(field, value);
+          _nodes[field] = _RepeatedBytesNode(field, value as  List<Uint8List>);
         } else {
           assert(value is Uint8List);
-          _nodes[field] = _BytesNode(field, value);
+          _nodes[field] = _BytesNode(field, value as Uint8List);
         }
         break;
       case Type.message:
         if (field._label == Label.repeated) {
           assert(value is List<_Message>);
-          _nodes[field] = _RepeatedMessageNode(field, value);
+          _nodes[field] = _RepeatedMessageNode(field, value as  List<_Message>);
         } else {
           assert(value is _Message);
-          _nodes[field] = _MessageNode(field, value);
+          _nodes[field] = _MessageNode(field, value as _Message);
         }
         break;
       default:
@@ -171,7 +171,7 @@ abstract class _Message {
   }
 
   void _addBool(Field field, bool value) {
-    _RepeatedBooleanNode node = _nodes[field];
+    var node = _nodes[field] as _RepeatedBooleanNode;
     if (node == null) {
       node = _RepeatedBooleanNode(field, List<bool>());
       _nodes[field] = node;
@@ -180,7 +180,7 @@ abstract class _Message {
   }
 
   void _addNumber(Field field, num value) {
-    _RepeatedNumberNode node = _nodes[field];
+    var node = _nodes[field] as _RepeatedNumberNode;
     if (node == null) {
       node = _RepeatedNumberNode(field, List<num>());
       _nodes[field] = node;
@@ -189,7 +189,7 @@ abstract class _Message {
   }
 
   void _addString(Field field, String value) {
-    _RepeatedStringNode node = _nodes[field];
+    var node = _nodes[field] as _RepeatedStringNode;
     if (node == null) {
       node = _RepeatedStringNode(field, List<String>());
       _nodes[field] = node;
@@ -198,7 +198,7 @@ abstract class _Message {
   }
 
   void _addBytes(Field field, Uint8List value) {
-    _RepeatedBytesNode node = _nodes[field];
+    var node = _nodes[field] as _RepeatedBytesNode;
     if (node == null) {
       node = _RepeatedBytesNode(field, List<Uint8List>());
       _nodes[field] = node;
@@ -207,7 +207,7 @@ abstract class _Message {
   }
 
   void _addMessage(Field field, _Message value) {
-    _RepeatedMessageNode node = _nodes[field];
+    var node = _nodes[field] as _RepeatedMessageNode;
     if (node == null) {
       node = _RepeatedMessageNode(field, List<_Message>());
       _nodes[field] = node;
