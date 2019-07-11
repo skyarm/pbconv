@@ -132,7 +132,7 @@ abstract class _Message {
       case Type.uint64:
         if (field._label == Label.repeated) {
           assert(value is List<num>);
-          _nodes[field] = _RepeatedNumberNode(field, value  as List<num>);
+          _nodes[field] = _RepeatedNumberNode(field, value as List<num>);
         } else {
           assert(value is num);
           _nodes[field] = _NumberNode(field, value as num);
@@ -150,7 +150,7 @@ abstract class _Message {
       case Type.bytes:
         if (field._label == Label.repeated) {
           assert(value is List<Uint8List>);
-          _nodes[field] = _RepeatedBytesNode(field, value as  List<Uint8List>);
+          _nodes[field] = _RepeatedBytesNode(field, value as List<Uint8List>);
         } else {
           assert(value is Uint8List);
           _nodes[field] = _BytesNode(field, value as Uint8List);
@@ -159,7 +159,7 @@ abstract class _Message {
       case Type.message:
         if (field._label == Label.repeated) {
           assert(value is List<_Message>);
-          _nodes[field] = _RepeatedMessageNode(field, value as  List<_Message>);
+          _nodes[field] = _RepeatedMessageNode(field, value as List<_Message>);
         } else {
           assert(value is _Message);
           _nodes[field] = _MessageNode(field, value as _Message);

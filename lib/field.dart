@@ -28,7 +28,7 @@ enum Type {
 
 class Field {
   Field(int tag, String name, Label label, Type type,
-      {dynamic value, Function createDecoderFunc,  bool packed = false}) {
+      {dynamic value, Function createDecoderFunc, bool packed = false}) {
     _tag = tag;
     _name = name;
     _label = label;
@@ -129,7 +129,7 @@ class Field {
   Function _createDecoderFunc;
 
   get hashCode => _tag;
-  bool operator==(dynamic other) => this.hashCode == other.hashCode;
+  bool operator ==(dynamic other) => this.hashCode == other.hashCode;
 }
 
 class RequiredField extends Field {

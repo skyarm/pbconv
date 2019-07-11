@@ -44,7 +44,7 @@ class _TimestampEncoder extends EncoderMessage {
         value.microsecondsSinceEpoch ~/ Duration.microsecondsPerSecond;
     int nanos =
         value.microsecondsSinceEpoch - seconds * Duration.microsecondsPerSecond;
-        
+
     this[Timestamp._fields[0]] = seconds;
     this[Timestamp._fields[1]] = nanos;
   }
@@ -90,22 +90,19 @@ class Timespan {
 class RequiredTimespan extends Field {
   RequiredTimespan(int tag, String name)
       : super(tag, name, Label.required, Type.message,
-            value: Timespan.fields,
-            createDecoderFunc: Timespan.createDecoder);
+            value: Timespan.fields, createDecoderFunc: Timespan.createDecoder);
 }
 
 class OptionalTimespan extends Field {
   OptionalTimespan(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
-            value: Timespan.fields,
-            createDecoderFunc: Timespan.createDecoder);
+            value: Timespan.fields, createDecoderFunc: Timespan.createDecoder);
 }
 
 class RepeatedTimespan extends Field {
   RepeatedTimespan(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Timespan.fields,
-            createDecoderFunc: Timespan.createDecoder);
+            value: Timespan.fields, createDecoderFunc: Timespan.createDecoder);
 }
 
 class _TimespanEncoder extends EncoderMessage {
@@ -113,7 +110,8 @@ class _TimespanEncoder extends EncoderMessage {
     assert(value != null);
     int seconds = value.inSeconds;
     this[Timespan.fields[0]] = seconds;
-    this[Timespan.fields[1]] = value.inMicroseconds - seconds * Duration.microsecondsPerSecond;
+    this[Timespan.fields[1]] =
+        value.inMicroseconds - seconds * Duration.microsecondsPerSecond;
   }
 }
 
@@ -149,10 +147,10 @@ class _TimespanDecoder extends DecoderMessage {
   }
 
   Duration get realObject => _duration;
-  
+
   String toString() {
     return _duration.toString();
   }
-  
+
   Duration _duration;
 }

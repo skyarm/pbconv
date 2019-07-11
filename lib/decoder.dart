@@ -21,7 +21,7 @@ class Fragment {
 }
 
 //
-//   Message composed or parsed from bytes; 
+//   Message composed or parsed from bytes;
 //
 class DecoderMessage extends _Message {
   DecoderMessage(List<Field> fields) : super(fields);
@@ -85,7 +85,8 @@ class DecoderMessage extends _Message {
             assert(false);
         }
       } else {
-        var frag = Fragment(tag, wire, bytes.getRange(offset, offset + length) as Uint8List);
+        var frag = Fragment(
+            tag, wire, bytes.getRange(offset, offset + length) as Uint8List);
         _fragments.add(frag);
       }
       offset += length;
@@ -673,7 +674,7 @@ class DecoderMessage extends _Message {
     return -1;
   }
 
-  static  String _decodeString(Uint8List bytes, int offset, int length) {
+  static String _decodeString(Uint8List bytes, int offset, int length) {
     return utf8.decode(bytes.sublist(offset, offset + length));
   }
 
@@ -704,7 +705,8 @@ class ProtobufDecoder extends Converter<Uint8List, _Message> {
   }
 
   ChunkedConversionSink<Uint8List> startChunkedConversion(Sink<_Message> sink) {
-    return super.startChunkedConversion(sink) as ChunkedConversionSink<Uint8List>;
+    return super.startChunkedConversion(sink)
+        as ChunkedConversionSink<Uint8List>;
   }
 
   Converter<Uint8List, T> fuse<T>(Converter<_Message, T> other) {

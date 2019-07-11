@@ -15,11 +15,12 @@ class Coordinate {
   static final List<Field> fields = [
     RequiredField(1, "Longitude", Type.float64),
     RequiredField(2, "Latitude", Type.float64)
-    ];
+  ];
 
   static EncoderMessage createEncoder(Coordinate coord) {
     return CoordinateEncoder(coord);
   }
+
   static DecoderMessage createDecoder() {
     return CoordinateDecoder();
   }
@@ -48,12 +49,14 @@ class CoordinateEncoder extends EncoderMessage {
 }
 
 class CoordinateDecoder extends DecoderMessage {
-  CoordinateDecoder():super(Coordinate.fields);
+  CoordinateDecoder() : super(Coordinate.fields);
 
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     super.decode(parent, bytes, offset, end);
-    _coordinate = Coordinate(this[Coordinate.fields[0]] as double, this[Coordinate.fields[1]] as double);
+    _coordinate = Coordinate(this[Coordinate.fields[0]] as double,
+        this[Coordinate.fields[1]] as double);
   }
+
   Coordinate get realObject => _coordinate;
   Coordinate _coordinate;
 }
@@ -68,10 +71,9 @@ final List<Field> rootFileds = [
   RepeatedField(2, "Node2", Type.string),
   RequiredField(3, "Node3", Type.bytes),
   RequiredMessage(4, "Child", childFields),
-  RequiredTimestamp(5, "Timestamp"), 
+  RequiredTimestamp(5, "Timestamp"),
   RequiredCoordinate(6, "Coordinate")
 ];
-
 
 main() {
   var encoding = false;
@@ -79,7 +81,7 @@ main() {
     ProtobufEncoder encoder = ProtobufEncoder();
 
     var root = EncoderMessage(rootFileds);
-  
+
     root[rootFileds[0]] = -2;
 
     root[rootFileds[1]] = ["sfs", '2233'];
@@ -94,8 +96,8 @@ main() {
     child[childFields[0]] = ["dsfsdfsd"];
     child[childFields[1]] = 23;
 
-    root[rootFileds[4]]= Timestamp.createEncoder(DateTime.now()); //set to now
-    root[rootFileds[5]]= Coordinate.createEncoder(Coordinate(12.11, 34.23));
+    root[rootFileds[4]] = Timestamp.createEncoder(DateTime.now()); //set to now
+    root[rootFileds[5]] = Coordinate.createEncoder(Coordinate(12.11, 34.23));
 
     Uint8List bytes = encoder.convert(root);
     print(bytes.toList());
@@ -104,7 +106,6 @@ main() {
     //sample.createSync();
     sample.writeAsBytesSync(bytes);
     print(root.toString());
-
   } else {
     File sample = File("tests/crosstest/crosstest.bin");
     var bytes = sample.readAsBytesSync();
@@ -113,8 +114,10 @@ main() {
     DecoderMessage decoderMessage = decoder.convert(bytes as Uint8List);
     print(decoderMessage.toString());
 
-    print("TimerStamp: ${decoderMessage[rootFileds[4]].year}, ${decoderMessage[rootFileds[4]].month}");
+    print(
+        "TimerStamp: ${decoderMessage[rootFileds[4]].year}, ${decoderMessage[rootFileds[4]].month}");
 
-    print("Coord: ${decoderMessage[rootFileds[5]].longitude}, ${decoderMessage[rootFileds[5]].latitude}");
+    print(
+        "Coord: ${decoderMessage[rootFileds[5]].longitude}, ${decoderMessage[rootFileds[5]].latitude}");
   }
 }

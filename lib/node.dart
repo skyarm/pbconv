@@ -460,7 +460,8 @@ class _RepeatedNumberNode extends _Node {
 
       //Copy the temp bytes to the pager;
       yield* pager.addBytesList(bytesList);
-      yield* pager.addBytes(numbersPager.bytes as Uint8List, numbersPager.offset);
+      yield* pager.addBytes(
+          numbersPager.bytes as Uint8List, numbersPager.offset);
       //now all the bytes are copied from stream to this stream;
     } else {
       for (var value in _values) {
