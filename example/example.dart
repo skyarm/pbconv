@@ -13,16 +13,16 @@ main() {
   if (file.existsSync()) {
     var bytes = file.readAsBytesSync();
     print(bytes);
-    ProtobufDecoder decoder = ProtobufDecoder(fields);
-    DecoderMessage message = decoder.convert(bytes as Uint8List);
+    ProtobufDecoder decoder = ProtobufDecoder();
+    DecoderMessage message = decoder.convert(ProtoBytes(fields, bytes as Uint8List));
     print(message.toString());
   } else {
     var message = EncoderMessage(fields);
     message[fields[0]] = 1;
     message[fields[1]] = 'Tom';
     ProtobufEncoder encoder = ProtobufEncoder();
-    var bytes = encoder.convert(message);
-    print(bytes);
-    file.writeAsBytesSync(bytes);
+    var proto = encoder.convert(message);
+    print(proto.bytes);
+    file.writeAsBytesSync(proto.bytes);
   }
 }

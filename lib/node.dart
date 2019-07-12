@@ -615,7 +615,7 @@ class _RepeatedBytesNode extends _Node {
 }
 
 class _TempMessageNode extends _Node {
-  _TempMessageNode(Field field, _Message value) : super(field) {
+  _TempMessageNode(Field field, Message value) : super(field) {
     _value = value as EncoderMessage;
   }
 
@@ -627,7 +627,7 @@ class _TempMessageNode extends _Node {
 }
 
 class _MessageNode extends _Node {
-  _MessageNode(Field field, _Message value) : super(field) {
+  _MessageNode(Field field, Message value) : super(field) {
     _value = value;
   }
 
@@ -654,11 +654,11 @@ class _MessageNode extends _Node {
     return xml;
   }
 
-  _Message _value;
+  Message _value;
 }
 
 class _RepeatedMessageNode extends _Node {
-  _RepeatedMessageNode(Field field, List<_Message> values) : super(field) {
+  _RepeatedMessageNode(Field field, List<Message> values) : super(field) {
     _values = values;
   }
 
@@ -690,5 +690,5 @@ class _RepeatedMessageNode extends _Node {
     return xml;
   }
 
-  List<_Message> _values;
+  List<Message> _values;
 }

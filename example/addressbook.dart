@@ -83,7 +83,7 @@ class Addressbook {
   List<Person> _persons;
 }
 
-//Implements _AddressbookEncoder, It will initial encdder data.
+//Implements _AddressbookEncoder, It will initial encoder data.
 class _AddressbookEncoder extends EncoderMessage {
   _AddressbookEncoder(Addressbook addressbook) : super(Addressbook.fields) {
     var encoders = List<_PersonEncoder>();
@@ -121,18 +121,19 @@ main() {
     addressbook.addPerson(
         Person(2, "Thomas", ["thomas@example1.com", "thomas@example2.com"]));
 
-    //ProtobufEncoder implemets dart:convert.
+    //ProtobufEncoder implements dart:convert.
     var encoder = ProtobufEncoder();
     //now convert the addressbook message to binary bytes.
-    var bytes = encoder.convert(Addressbook.createEncoder(addressbook));
+    var proto = encoder.convert(Addressbook.createEncoder(addressbook));
 
-    file.writeAsBytesSync(bytes);
+    file.writeAsBytesSync(proto.bytes);
     print("Now the binary file $filename has been created.");
   } else {
     var bytes = file.readAsBytesSync();
     print(bytes);
-    ProtobufDecoder decoder = ProtobufDecoder(Addressbook.fields);
-    DecoderMessage message = decoder.convert(bytes as Uint8List);
+    ProtobufDecoder decoder = ProtobufDecoder();
+    DecoderMessage message =
+        decoder.convert(ProtoBytes(Addressbook.fields, bytes as Uint8List));
     //decoderMessage.toString() return XML debug message, but the message hasn't root element.
     //it is used for debug only.
     print(message.toString());

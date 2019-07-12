@@ -23,7 +23,7 @@ class Fragment {
 //
 //   Message composed or parsed from bytes;
 //
-class DecoderMessage extends _Message {
+class DecoderMessage extends Message {
   DecoderMessage(List<Field> fields) : super(fields);
 
   void decode(Field parent, Uint8List bytes, int offset, int end) {
@@ -661,31 +661,4 @@ class DecoderMessage extends _Message {
   }
 
   List<Fragment> _fragments;
-}
-
-class ProtobufDecoder extends Converter<Uint8List, _Message> {
-  ProtobufDecoder(List<Field> fields) {
-    _fields = fields;
-  }
-
-  Stream<_Message> bind(Stream<Uint8List> stream) {
-    return super.bind(stream);
-  }
-
-  DecoderMessage convert(Uint8List bytes) {
-    DecoderMessage message = DecoderMessage(_fields);
-    message.decode(null, bytes, 0, bytes.length);
-    return message;
-  }
-
-  ChunkedConversionSink<Uint8List> startChunkedConversion(Sink<_Message> sink) {
-    return super.startChunkedConversion(sink)
-        as ChunkedConversionSink<Uint8List>;
-  }
-
-  Converter<Uint8List, T> fuse<T>(Converter<_Message, T> other) {
-    return super.fuse<T>(other);
-  }
-
-  List<Field> _fields;
 }

@@ -73,6 +73,7 @@ class _TimestampDecoder extends DecoderMessage {
   DateTime _dateTime;
 }
 
+//We have to using Timespan for the class name, Because dart has Duration class.
 class Timespan {
   static final List<Field> fields = [
     RequiredField(1, "Seconds", Type.int64),

@@ -11,9 +11,8 @@ main() {
   var message = EncoderMessage(fields);
   message[fields[0]] = 1;
   message[fields[1]] = 'Tom';
-  ProtobufEncoder encoder = ProtobufEncoder();
-  var bytes = encoder.convert(message);
-  print(bytes);
+  var proto = protobufEncode(message);
+  print(proto.bytes);
   File file = File("example.bin");
-  file.writeAsBytesSync(bytes);
+  file.writeAsBytesSync(proto.bytes);
 }

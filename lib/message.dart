@@ -1,7 +1,7 @@
 part of pbconv;
 
-abstract class _Message {
-  _Message(List<Field> fields) {
+abstract class Message {
+  Message(List<Field> fields) {
     assert(tagsReview(fields), "Tag ID is duplicated");
     _fields = fields;
     _nodes = HashMap<Field, _Node>();
@@ -158,11 +158,11 @@ abstract class _Message {
         break;
       case Type.message:
         if (field._label == Label.repeated) {
-          assert(value is List<_Message>);
-          _nodes[field] = _RepeatedMessageNode(field, value as List<_Message>);
+          assert(value is List<Message>);
+          _nodes[field] = _RepeatedMessageNode(field, value as List<Message>);
         } else {
-          assert(value is _Message);
-          _nodes[field] = _MessageNode(field, value as _Message);
+          assert(value is Message);
+          _nodes[field] = _MessageNode(field, value as Message);
         }
         break;
       default:
@@ -269,7 +269,7 @@ abstract class _Message {
     node._values.add(value);
   }
 
-  void _setMessage(Field field, _Message value) {
+  void _setMessage(Field field, Message value) {
     var node = _nodes[field] as _MessageNode;
     if (node == null) {
       node = _MessageNode(field, value);
@@ -280,10 +280,10 @@ abstract class _Message {
   }
 
 
-  void _addMessage(Field field, _Message value) {
+  void _addMessage(Field field, Message value) {
     var node = _nodes[field] as _RepeatedMessageNode;
     if (node == null) {
-      node = _RepeatedMessageNode(field, List<_Message>());
+      node = _RepeatedMessageNode(field, List<Message>());
       _nodes[field] = node;
     }
     node._values.add(value);

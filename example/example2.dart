@@ -12,7 +12,6 @@ main() {
   File file = File("example.bin");
   var bytes = file.readAsBytesSync();
   print(bytes);
-  ProtobufDecoder decoder = ProtobufDecoder(fields);
-  DecoderMessage message = decoder.convert(bytes as Uint8List);
+  var message = protobufDecode(ProtoBytes(fields, bytes as Uint8List));
   print(message.toString());
 }

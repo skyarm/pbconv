@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "example1",
-            "program": "examples/addressbook.dart",
+            "program": "example/example2.dart",
             "request": "launch",
             "type": "dart"
         }
