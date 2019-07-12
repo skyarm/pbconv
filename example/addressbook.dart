@@ -120,24 +120,23 @@ main() {
         .addPerson(Person(1, "Tom", ["tom@example1.com", "tom@example2.com"]));
     addressbook.addPerson(
         Person(2, "Thomas", ["thomas@example1.com", "thomas@example2.com"]));
-
-    //ProtobufEncoder implements dart:convert.
-    var encoder = ProtobufEncoder();
+    
     //now convert the addressbook message to binary bytes.
-    var proto = encoder.convert(Addressbook.createEncoder(addressbook));
+    var proto = protobuf.encode(Addressbook.createEncoder(addressbook));
 
     file.writeAsBytesSync(proto.bytes);
     print("Now the binary file $filename has been created.");
   } else {
     var bytes = file.readAsBytesSync();
     print(bytes);
-    ProtobufDecoder decoder = ProtobufDecoder();
     DecoderMessage message =
-        decoder.convert(ProtoBytes(Addressbook.fields, bytes as Uint8List));
+        protobuf.decode(ProtoBytes(Addressbook.fields, bytes as Uint8List))
+            as DecoderMessage;
     //decoderMessage.toString() return XML debug message, but the message hasn't root element.
     //it is used for debug only.
     print(message.toString());
 
+    //This section show that how to access Message member.
     for (var person in message[Addressbook.fields[0]]) {
       print("Person:");
       print("\tID: ${person[Person.fields[0]]}");

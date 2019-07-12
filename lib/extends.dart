@@ -5,11 +5,11 @@ class Timestamp {
     RequiredField(1, "Seconds", Type.int64),
     RequiredField(2, "Nanos", Type.int32),
   ];
-  static EncoderMessage createEncoder(DateTime value) {
+  static EncoderMessage encoderCreator(DateTime value) {
     return _TimestampEncoder(value);
   }
 
-  static DecoderMessage createDecoder(dynamic value) {
+  static DecoderMessage decoderCreator(dynamic value) {
     //ignore the value parameter.
     return _TimestampDecoder();
   }
@@ -19,21 +19,21 @@ class RequiredTimestamp extends Field {
   RequiredTimestamp(int tag, String name)
       : super(tag, name, Label.required, Type.message,
             value: Timestamp._fields,
-            attrs: Timestamp.createDecoder);
+            attrs: Timestamp.decoderCreator);
 }
 
 class OptionalTimestamp extends Field {
   OptionalTimestamp(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
             value: Timestamp._fields,
-            attrs: Timestamp.createDecoder);
+            attrs: Timestamp.decoderCreator);
 }
 
 class RepeatedTimestamp extends Field {
   RepeatedTimestamp(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
             value: Timestamp._fields,
-            attrs: Timestamp.createDecoder);
+            attrs: Timestamp.decoderCreator);
 }
 
 class _TimestampEncoder extends EncoderMessage {

@@ -96,7 +96,7 @@ main() {
     child[childFields[0]] = ["This is a string value."];
     child[childFields[1]] = 23;
 
-    root[rootFields[4]] = Timestamp.createEncoder(DateTime.now()); //set to now
+    root[rootFields[4]] = Timestamp.encoderCreator(DateTime.now()); //set to now
     root[rootFields[5]] = Coordinate.createEncoder(Coordinate(12.11, 34.23));
 
     var proto = encoder.convert(root);
