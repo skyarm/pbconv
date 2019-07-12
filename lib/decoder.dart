@@ -203,12 +203,13 @@ class DecoderMessage extends _Message {
           throw FormatException(
               "Failed to decode message, Bad wire", field._name, field._tag);
         }
-        if (field._func == null) {
+        if (field._attrs == null) {
           var message = DecoderMessage(field._value as List<Field>);
           message.decode(field, bytes, offset, offset + length);
           _setMessage(field, message);
         } else {
-          var message = field._func();
+          var func = field._attrs as DecoderCreator;
+          var message = func(this);
           message.decode(field, bytes, offset, offset + length);
           _setMessage(field, message);
         }
@@ -222,7 +223,7 @@ class DecoderMessage extends _Message {
       int wire, int length, Field parent) {
     switch (field._type) {
       case Type.boolean:
-        if (field._packed) {
+        if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
             throw FormatException("Failed to decode repeated boolean, Bad wire",
                 field._name, field._tag);
@@ -257,7 +258,7 @@ class DecoderMessage extends _Message {
       case Type.uint32:
       case Type.int32:
       case Type.sint32:
-        if (field._packed) {
+        if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
             throw FormatException(
                 "Failed to decode number repeated varint32 number, Bad wire",
@@ -302,7 +303,7 @@ class DecoderMessage extends _Message {
       case Type.fixed32:
       case Type.sfixed32:
       case Type.float32:
-        if (field._packed) {
+        if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
             throw FormatException(
                 "Failed to decode repeated fixed32 number, Bad wire",
@@ -347,7 +348,7 @@ class DecoderMessage extends _Message {
       case Type.int64:
       case Type.sint64:
       case Type.uint64:
-        if (field._packed) {
+        if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
             throw FormatException(
                 "Failed to decode repeated varint64 number, Bad wire",
@@ -389,7 +390,7 @@ class DecoderMessage extends _Message {
       case Type.fixed64:
       case Type.sfixed64:
       case Type.float64:
-        if (field._packed) {
+        if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
             throw FormatException("Failed to decode repeated fixed64, Bad wire",
                 field._name, field._tag);
@@ -451,14 +452,15 @@ class DecoderMessage extends _Message {
           throw FormatException("Failed to decode repeated message, Bad wire",
               field._name, field._tag);
         }
-        if (field._func == null) {
+        if (field._attrs == null) {
           var message = DecoderMessage(field._value as List<Field>);
           message.decode(field, bytes, offset, offset + length);
           _addMessage(field, message);
         } else {
-          var message = field._func();
+          var func = field._attrs as DecoderCreator;
+          var message = func(this);
           message.decode(field, bytes, offset, offset + length);
-          _addMessage(field, message as _Message);
+          _addMessage(field, message);
         }
         break;
 

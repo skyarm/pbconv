@@ -293,7 +293,7 @@ class _RepeatedBooleanNode extends _Node {
   }
 
   Stream<Uint8List> encode(_BytesPager pager) async* {
-    if (_field._packed) {
+    if (_field._attrs == null || _field._attrs as bool == true) {
       yield* encodeTag(pager, _Wire.length);
       yield* encodeUint32(pager, _values.length);
       for (var v in _values) {
@@ -445,7 +445,7 @@ class _RepeatedNumberNode extends _Node {
   }
 
   Stream<Uint8List> encode(_BytesPager pager) async* {
-    if (_field._packed) {
+    if (_field._attrs == null || _field._attrs as bool == true) {
       yield* encodeTag(pager, _Wire.length);
       //calc the length of packed nodes
       var numbersNode = _TempNumbersNode(_field, _values);

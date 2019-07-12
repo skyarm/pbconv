@@ -92,7 +92,7 @@ abstract class _Message {
           var node = result as _RepeatedMessageNode;
           return node == null ? null : node._values;
         } else {
-          if (field._func == null) {
+          if (field._attrs == null) {
             var node = result as _MessageNode;
             return node == null ? null : node._value;
           } else {

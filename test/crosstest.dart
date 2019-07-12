@@ -21,7 +21,7 @@ class Coordinate {
     return CoordinateEncoder(coord);
   }
 
-  static DecoderMessage createDecoder() {
+  static DecoderMessage createDecoder(dynamic value) {
     return CoordinateDecoder();
   }
 }
@@ -30,14 +30,14 @@ class RequiredCoordinate extends Field {
   RequiredCoordinate(int tag, String name)
       : super(tag, name, Label.required, Type.message,
             value: Coordinate.fields,
-            func: Coordinate.createDecoder);
+            attrs: Coordinate.createDecoder);
 }
 
 class OptionalCoordinate extends Field {
   OptionalCoordinate(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
             value: Coordinate.fields,
-            func: Coordinate.createDecoder);
+            attrs: Coordinate.createDecoder);
 }
 
 class CoordinateEncoder extends EncoderMessage {

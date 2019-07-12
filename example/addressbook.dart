@@ -19,7 +19,7 @@ class Person {
   }
 
   //this static method must be implemented.
-  static DecoderMessage createDecoder() {
+  static DecoderMessage createDecoder(dynamic value) {
     return _PersonDecoder();
   }
 
@@ -57,7 +57,7 @@ class _PersonDecoder extends DecoderMessage {
 class RepeatedPersonField extends Field {
   RepeatedPersonField(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Person.fields, func: Person.createDecoder);
+            value: Person.fields, attrs: Person.createDecoder);
 }
 
 //Addressbook
