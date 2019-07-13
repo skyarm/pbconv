@@ -61,7 +61,7 @@ class Field {
         }
         switch (_type) {
           case Type.boolean:
-            if (!(_value is bool)) {
+            if (_value is! bool) {
               return false;
             }
             break;
@@ -78,20 +78,22 @@ class Field {
           case Type.sint64:
           case Type.uint32:
           case Type.uint64:
-            if (!(_value is num)) {
+            if (_value is! num) {
               return false;
             }
             break;
           case Type.string:
-            if (!(_value is String)) {
+            if (_value is! String) {
               return false;
             }
             break;
-          case Type.bytes: //bytes no default value?
-            return false;
+          case Type.bytes:
+            if (_value is! List<int>) {
+              return false;
+            }
             break;
           case Type.message:
-            if (!(_value is List<Field>)) {
+            if (_value is! List<Field>) {
               return false;
             }
             break;
@@ -150,18 +152,15 @@ class OptionalField extends Field {
 
 class RequiredMessage extends Field {
   RequiredMessage(int tag, String name, List<Field> fields)
-      : super(tag, name, Label.required, Type.message,
-            value: fields);
+      : super(tag, name, Label.required, Type.message, value: fields);
 }
 
 class OptionalMessage extends Field {
   OptionalMessage(int tag, String name, List<Field> fields)
-      : super(tag, name, Label.optional, Type.message,
-            value: fields);
+      : super(tag, name, Label.optional, Type.message, value: fields);
 }
 
 class RepeatedMessage extends Field {
   RepeatedMessage(int tag, String name, List<Field> fields)
-      : super(tag, name, Label.repeated, Type.message,
-            value: fields);
+      : super(tag, name, Label.repeated, Type.message, value: fields);
 }

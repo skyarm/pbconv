@@ -112,7 +112,7 @@ class ProtobufDecoder extends Converter<ProtoBytes, Message> {
 
   Message decode(Stream<ProtoBytes> stream) {
     var bytesList = waitFor(stream.toList());
-     int count = 0; 
+    int count = 0;
     List<Field> fields;
     for (var proto in bytesList) {
       if (fields == null) {

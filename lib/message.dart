@@ -81,7 +81,7 @@ abstract class Message {
         } else {
           var node = result as _BytesNode;
           if (node == null && field._label == Label.optional) {
-            return field._value;
+            return Uint8List.fromList(field._value as List<int>);
           } else {
             return node == null ? null : node._value;
           }

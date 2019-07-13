@@ -23,7 +23,6 @@ class EncoderMessage extends Message {
   }
 }
 
-
 enum _Wire {
   varint, //variable length integer, etc uint32, sint32 uint64 sint64.
   num64, //fixed 64bit number, etc double, fixed64, sfixed64.
@@ -697,7 +696,8 @@ class _RepeatedMessageNode extends _Node {
           pager, bytesList.length * messagePager.size + messagePager.offset);
 
       yield* pager.addBytesList(bytesList);
-      yield* pager.addBytes(messagePager.bytes as Uint8List, messagePager.offset);
+      yield* pager.addBytes(
+          messagePager.bytes as Uint8List, messagePager.offset);
     }
   }
 
