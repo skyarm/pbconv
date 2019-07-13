@@ -36,4 +36,5 @@ message Root {
   required Child node4 = 4;
   required Timestamp node5 = 5;
   required Coordinate node6 = 6;
+  required Timespan node7 = 7;
 }

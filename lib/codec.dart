@@ -73,6 +73,7 @@ class ProtobufEncoder extends Converter<EncoderMessage, ProtoBytes> {
     return _ProtobufEncoderSink(sink);
   }
 
+  ///Set encoderPageSize default value to 128 bytes, you can set the value to other value.
   static int encoderPageSize = 128;
 }
 
@@ -163,7 +164,7 @@ class _ProtobufDecoderSink extends ChunkedConversionSink<ProtoBytes> {
     for (var bytes in _bytesList) {
       count += bytes.length;
     }
-    Uint8List result = Uint8List(count);
+    var result = Uint8List(count);
     int offset = 0;
     for (var bytes in _bytesList) {
       result.setRange(offset, offset + bytes.length, bytes);

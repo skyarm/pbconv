@@ -24,7 +24,9 @@ class Fragment {
 //   Message composed or parsed from bytes;
 //
 class DecoderMessage extends Message {
-  DecoderMessage(List<Field> fields) : super(fields);
+  DecoderMessage(List<Field> fields) : super(fields) {
+    _fragments = List<Fragment>();
+  }
 
   void decode(Field parent, Uint8List bytes, int offset, int end) {
     while (offset < end) {
@@ -86,7 +88,7 @@ class DecoderMessage extends Message {
         }
       } else {
         var frag = Fragment(
-            tag, wire, bytes.getRange(offset, offset + length) as Uint8List);
+            tag, wire, bytes.sublist(offset, offset + length) as Uint8List);
         _fragments.add(frag);
       }
       offset += length;

@@ -2,8 +2,8 @@ part of pbconv;
 
 class Timestamp {
   static final List<Field> _fields = [
-    RequiredField(1, "Seconds", Type.int64),
-    RequiredField(2, "Nanos", Type.int32),
+    RequiredField(1, "seconds", Type.int64),
+    RequiredField(2, "nanos", Type.int32),
   ];
   static EncoderMessage encoderMessage(DateTime value) {
     return _TimestampEncoder(value);
@@ -76,11 +76,11 @@ class _TimestampDecoder extends DecoderMessage {
 //We have to using Timespan for the class name, Because dart has Duration class.
 class Timespan {
   static final List<Field> fields = [
-    RequiredField(1, "Seconds", Type.int64),
-    RequiredField(2, "Nanos", Type.int32),
+    RequiredField(1, "seconds", Type.int64),
+    RequiredField(2, "nanos", Type.int32),
   ];
 
-  static EncoderMessage createEncoder(Duration value) {
+  static EncoderMessage encoderMessage(Duration value) {
     return _TimespanEncoder(value);
   }
 

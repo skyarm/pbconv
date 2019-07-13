@@ -72,12 +72,13 @@ final List<Field> rootFields = [
   RequiredField(3, "Node3", Type.bytes),
   RequiredMessage(4, "Child", childFields),
   RequiredTimestamp(5, "Timestamp"),
-  RequiredCoordinate(6, "Coordinate")
+  RequiredCoordinate(6, "Coordinate"),
+  RequiredTimespan(7, "Duration")
 ];
 
 main() {
-  var encoding = false;
-  if (encoding) {
+  File file = File("crosstest.bin");
+  if (! file.existsSync()) {
     ProtobufEncoder encoder = ProtobufEncoder();
 
     var root = EncoderMessage(rootFields);
@@ -85,10 +86,8 @@ main() {
     root[rootFields[0]] = -2;
 
     root[rootFields[1]] = ["string1", 'string2'];
-
-    Uint8List data = Uint8List(8);
-    data.buffer.asByteData().setFloat64(0, 0.123);
-    root[rootFields[2]] = data;
+    
+    root[rootFields[2]] = Uint8List.fromList([12, 3, 4, 5]);
 
     var child = EncoderMessage(childFields);
     root[rootFields[3]] = child;
@@ -98,17 +97,16 @@ main() {
 
     root[rootFields[4]] = Timestamp.encoderMessage(DateTime.now()); //set to now
     root[rootFields[5]] = Coordinate.encoderMessage(Coordinate(12.11, 34.23));
+    root[rootFields[6]] = Timespan.encoderMessage(Duration(days: 1, hours: 3, minutes: 23, seconds: 12));
 
     var proto = encoder.convert(root);
     print(proto.bytes);
 
-    File sample = File("tests/crosstest/crosstest.bin");
     //sample.createSync();
-    sample.writeAsBytesSync(proto.bytes);
+    file.writeAsBytesSync(proto.bytes);
     print(root.toString());
   } else {
-    File sample = File("tests/crosstest/crosstest.bin");
-    var bytes = sample.readAsBytesSync();
+    var bytes = file.readAsBytesSync();
     print(bytes);
     ProtobufDecoder decoder = ProtobufDecoder();
     DecoderMessage decoderMessage = decoder.convert(ProtoBytes(rootFields, bytes as Uint8List));
