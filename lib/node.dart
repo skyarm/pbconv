@@ -13,7 +13,7 @@ enum _Wire {
 }
 
 class _BytesPager {
-  _BytesPager(int size) {
+  _BytesPager([int size = 128]) {
     _offset = 0;
     _size = size;
     _bytes = Uint8List(_size);

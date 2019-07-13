@@ -31,7 +31,7 @@ class ProtobufCodec extends Codec<Message, ProtoBytes> {
   }
 
   ProtobufDecoder get decoder {
-    return ProtobufDecoder(); 
+    return ProtobufDecoder();
   }
 }
 
@@ -43,13 +43,8 @@ Message protobufDecode(ProtoBytes proto) {
   return protobuf.decode(proto);
 }
 
-
 class ProtobufEncoder extends Converter<EncoderMessage, ProtoBytes> {
   ProtobufEncoder();
-
-  Stream<ProtoBytes> bind(Stream<Message> stream) {
-    return super.bind(stream as Stream<EncoderMessage>);
-  }
 
   Future<List<Uint8List>> _pull(Stream<Uint8List> stream) async {
     List<Uint8List> bytesList = List<Uint8List>();
@@ -83,21 +78,36 @@ class ProtobufEncoder extends Converter<EncoderMessage, ProtoBytes> {
 
   ChunkedConversionSink<EncoderMessage> startChunkedConversion(
       Sink<ProtoBytes> sink) {
-    return null;
-  }
-
-  Converter<EncoderMessage, T> fuse<T>(Converter<ProtoBytes, T> other) {
-    return super.fuse<T>(other);
+    return _ProtobufEncoderSink(sink);
   }
 }
 
+class _ProtobufEncoderSink extends ChunkedConversionSink<EncoderMessage> {
+  final Sink<ProtoBytes> _sink;
+  bool _isDone = false;
+
+  _ProtobufEncoderSink(this._sink);
+
+  void add(EncoderMessage m) {
+    if (_isDone) {
+      throw StateError("Only one call to add allowed");
+    }
+    var pager = _BytesPager(128);
+    waitFor((_sink as IOSink).addStream(encode(pager, m)));
+    _isDone = true;
+    _sink.close();
+  }
+
+  Stream<Uint8List> encode(_BytesPager pager, EncoderMessage message) async* {
+    yield* message.encode(pager);
+    yield* pager.commit();
+  }
+
+  void close() {/* do nothing */}
+}
 
 class ProtobufDecoder extends Converter<ProtoBytes, Message> {
   ProtobufDecoder();
-
-  Stream<Message> bind(Stream<ProtoBytes> stream) {
-    return super.bind(stream);
-  }
 
   DecoderMessage convert(ProtoBytes proto) {
     DecoderMessage message = DecoderMessage(proto._fields);
@@ -106,11 +116,46 @@ class ProtobufDecoder extends Converter<ProtoBytes, Message> {
   }
 
   ChunkedConversionSink<ProtoBytes> startChunkedConversion(Sink<Message> sink) {
-    return super.startChunkedConversion(sink)
-        as ChunkedConversionSink<ProtoBytes>;
+    return _ProtobufDecoderSink(sink);
+  }
+}
+
+class _ProtobufDecoderSink extends ChunkedConversionSink<ProtoBytes> {
+  final Sink<Message> _sink;
+
+  _ProtobufDecoderSink(this._sink);
+
+  void add(ProtoBytes proto) {
+    if (_fields == null) {
+      _fields = proto.fields;
+    } else {
+      if (proto.fields != _fields) {
+        throw StateError("Field list value is changed.");
+      }
+    }
+    _bytesList.add(proto.bytes);
   }
 
-  Converter<ProtoBytes, T> fuse<T>(Converter<Message, T> other) {
-    return super.fuse<T>(other);
+  void close() {
+    decode();
+    _sink.close();
   }
+
+  void decode() {
+    int count = 0;
+    for (var bytes in _bytesList) {
+      count += bytes.length;
+    }
+    Uint8List result = Uint8List(count);
+    int offset = 0;
+    for (var bytes in _bytesList) {
+      result.setRange(offset, offset + bytes.length, bytes);
+      offset += bytes.length;
+    }
+    Message message = protobufDecode(ProtoBytes(_fields, result));
+    _sink.add(message);
+  }
+
+  List<Field> _fields;
+  List<Uint8List> _bytesList;
 }
