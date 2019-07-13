@@ -44,7 +44,7 @@ Message protobufDecode(ProtoBytes proto) {
 }
 
 class ProtobufEncoder extends Converter<EncoderMessage, ProtoBytes> {
-  ProtobufEncoder();
+  const ProtobufEncoder();
 
   Future<List<Uint8List>> _pull(Stream<Uint8List> stream) async {
     List<Uint8List> bytesList = List<Uint8List>();
@@ -107,7 +107,7 @@ class _ProtobufEncoderSink extends ChunkedConversionSink<EncoderMessage> {
 }
 
 class ProtobufDecoder extends Converter<ProtoBytes, Message> {
-  ProtobufDecoder();
+  const ProtobufDecoder();
 
   DecoderMessage convert(ProtoBytes proto) {
     DecoderMessage message = DecoderMessage(proto._fields);
