@@ -1,5 +1,5 @@
 name: pbconv
-version: 0.5.5
+version: 0.5.9
 author: Thomas Zhang <zhangtao@skyarm.com>
 description: >-
   A implement of Dart:convert for [Protobuf](https://developers.google.com/protocol-buffers/).

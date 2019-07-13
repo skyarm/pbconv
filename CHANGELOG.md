@@ -1,3 +1,5 @@
+## 0.5.9
+  All the function seem to completed, So the next, We will hard test it.
 ## 0.5.5
   Correct the problem for publication.
 ## 0.5.4
