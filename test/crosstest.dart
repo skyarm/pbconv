@@ -17,11 +17,11 @@ class Coordinate {
     RequiredField(2, "Latitude", Type.float64)
   ];
 
-  static EncoderMessage encoderMessage(Coordinate coord) {
+  static EncoderMessage createEncoderMessage(Coordinate coord) {
     return CoordinateEncoder(coord);
   }
 
-  static DecoderMessage decoderMessage(dynamic value) {
+  static DecoderMessage createDecoderMessage(dynamic value) {
     return CoordinateDecoder();
   }
 }
@@ -29,15 +29,13 @@ class Coordinate {
 class RequiredCoordinate extends Field {
   RequiredCoordinate(int tag, String name)
       : super(tag, name, Label.required, Type.message,
-            value: Coordinate.fields,
-            attrs: Coordinate.decoderMessage);
+            value: Coordinate.fields, attrs: Coordinate.createDecoderMessage);
 }
 
 class OptionalCoordinate extends Field {
   OptionalCoordinate(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
-            value: Coordinate.fields,
-            attrs: Coordinate.decoderMessage);
+            value: Coordinate.fields, attrs: Coordinate.createDecoderMessage);
 }
 
 class CoordinateEncoder extends EncoderMessage {
@@ -78,7 +76,7 @@ final List<Field> rootFields = [
 
 main() {
   File file = File("crosstest.bin");
-  if (! file.existsSync()) {
+  if (!file.existsSync()) {
     ProtobufEncoder encoder = ProtobufEncoder();
 
     var root = EncoderMessage(rootFields);
@@ -86,7 +84,7 @@ main() {
     root[rootFields[0]] = -2;
 
     root[rootFields[1]] = ["string1", 'string2'];
-    
+
     root[rootFields[2]] = Uint8List.fromList([12, 3, 4, 5]);
 
     var child = EncoderMessage(childFields);
@@ -95,9 +93,12 @@ main() {
     child[childFields[0]] = ["This is a string value."];
     child[childFields[1]] = 23;
 
-    root[rootFields[4]] = Timestamp.encoderMessage(DateTime.now()); //set to now
-    root[rootFields[5]] = Coordinate.encoderMessage(Coordinate(12.11, 34.23));
-    root[rootFields[6]] = Timespan.encoderMessage(Duration(days: 1, hours: 3, minutes: 23, seconds: 12));
+    root[rootFields[4]] =
+        Timestamp.createEncoderMessage(DateTime.now()); //set to now
+    root[rootFields[5]] =
+        Coordinate.createEncoderMessage(Coordinate(12.11, 34.23));
+    root[rootFields[6]] = Timespan.createEncoderMessage(
+        Duration(days: 1, hours: 3, minutes: 23, seconds: 12));
 
     var proto = encoder.convert(root);
     print(proto.bytes);
@@ -109,7 +110,8 @@ main() {
     var bytes = file.readAsBytesSync();
     print(bytes);
     ProtobufDecoder decoder = ProtobufDecoder();
-    DecoderMessage decoderMessage = decoder.convert(ProtoBytes(rootFields, bytes as Uint8List));
+    DecoderMessage decoderMessage =
+        decoder.convert(ProtoBytes(rootFields, bytes as Uint8List));
     print(decoderMessage.toString());
 
     print(

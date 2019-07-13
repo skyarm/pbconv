@@ -5,11 +5,11 @@ class Timestamp {
     RequiredField(1, "seconds", Type.int64),
     RequiredField(2, "nanos", Type.int32),
   ];
-  static EncoderMessage encoderMessage(DateTime value) {
+  static EncoderMessage createEncoderMessage(DateTime value) {
     return _TimestampEncoder(value);
   }
 
-  static DecoderMessage decoderMessage(dynamic value) {
+  static DecoderMessage createDecoderMessage(dynamic value) {
     //ignore the value parameter.
     return _TimestampDecoder();
   }
@@ -18,22 +18,19 @@ class Timestamp {
 class RequiredTimestamp extends Field {
   RequiredTimestamp(int tag, String name)
       : super(tag, name, Label.required, Type.message,
-            value: Timestamp._fields,
-            attrs: Timestamp.decoderMessage);
+            value: Timestamp._fields, attrs: Timestamp.createDecoderMessage);
 }
 
 class OptionalTimestamp extends Field {
   OptionalTimestamp(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
-            value: Timestamp._fields,
-            attrs: Timestamp.decoderMessage);
+            value: Timestamp._fields, attrs: Timestamp.createDecoderMessage);
 }
 
 class RepeatedTimestamp extends Field {
   RepeatedTimestamp(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Timestamp._fields,
-            attrs: Timestamp.decoderMessage);
+            value: Timestamp._fields, attrs: Timestamp.createDecoderMessage);
 }
 
 class _TimestampEncoder extends EncoderMessage {
@@ -80,11 +77,11 @@ class Timespan {
     RequiredField(2, "nanos", Type.int32),
   ];
 
-  static EncoderMessage encoderMessage(Duration value) {
+  static EncoderMessage createEncoderMessage(Duration value) {
     return _TimespanEncoder(value);
   }
 
-  static DecoderMessage decoderMessage(dynamic value) {
+  static DecoderMessage createDecoderMessage(dynamic value) {
     return _TimespanDecoder();
   }
 }
@@ -92,19 +89,19 @@ class Timespan {
 class RequiredTimespan extends Field {
   RequiredTimespan(int tag, String name)
       : super(tag, name, Label.required, Type.message,
-            value: Timespan.fields, attrs: Timespan.decoderMessage);
+            value: Timespan.fields, attrs: Timespan.createDecoderMessage);
 }
 
 class OptionalTimespan extends Field {
   OptionalTimespan(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
-            value: Timespan.fields, attrs: Timespan.decoderMessage);
+            value: Timespan.fields, attrs: Timespan.createDecoderMessage);
 }
 
 class RepeatedTimespan extends Field {
   RepeatedTimespan(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Timespan.fields, attrs: Timespan.decoderMessage);
+            value: Timespan.fields, attrs: Timespan.createDecoderMessage);
 }
 
 class _TimespanEncoder extends EncoderMessage {

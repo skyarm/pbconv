@@ -14,12 +14,12 @@ class Person {
   String _name;
   List<String> _emails;
 
-  static EncoderMessage createEncoder(Person person) {
+  static EncoderMessage createEncoderMessage(Person person) {
     return _PersonEncoder(person);
   }
 
   //this static method must be implemented.
-  static DecoderMessage decoderCreator(dynamic value) {
+  static DecoderMessage createDecoderMessage(dynamic value) {
     return _PersonDecoder();
   }
 
@@ -57,7 +57,7 @@ class _PersonDecoder extends DecoderMessage {
 class RepeatedPersonField extends Field {
   RepeatedPersonField(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Person.fields, attrs: Person.decoderCreator);
+            value: Person.fields, attrs: Person.createDecoderMessage);
 }
 
 //Addressbook
@@ -70,11 +70,11 @@ class Addressbook {
     _persons.add(person);
   }
 
-  static EncoderMessage encoderMessage(Addressbook addressbook) {
+  static EncoderMessage createEncoderMessage(Addressbook addressbook) {
     return _AddressbookEncoder(addressbook);
   }
 
-  static DecoderMessage decoderMessage() {
+  static DecoderMessage createDecoderMessage() {
     return _AddressbookDecoder();
   }
 
@@ -88,7 +88,7 @@ class _AddressbookEncoder extends EncoderMessage {
   _AddressbookEncoder(Addressbook addressbook) : super(Addressbook.fields) {
     var encoders = List<_PersonEncoder>();
     for (var person in addressbook._persons) {
-      encoders.add(Person.createEncoder(person) as _PersonEncoder);
+      encoders.add(Person.createEncoderMessage(person) as _PersonEncoder);
     }
     this[Addressbook.fields[0]] = encoders;
   }
@@ -122,7 +122,7 @@ main() {
         Person(2, "Thomas", ["thomas@example1.com", "thomas@example2.com"]));
     
     //now convert the addressbook message to binary bytes.
-    var proto = protobuf.encode(Addressbook.encoderMessage(addressbook));
+    var proto = protobuf.encode(Addressbook.createEncoderMessage(addressbook));
 
     file.writeAsBytesSync(proto.bytes);
     print("Now the binary file $filename has been created.");
