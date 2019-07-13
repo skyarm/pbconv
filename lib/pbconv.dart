@@ -8,7 +8,6 @@ import "dart:typed_data";
 
 part "codec.dart";
 part "field.dart";
-part "node.dart";
 part "message.dart";
 part "encoder.dart";
 part "decoder.dart";

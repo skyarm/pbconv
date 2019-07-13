@@ -70,11 +70,11 @@ class Addressbook {
     _persons.add(person);
   }
 
-  static EncoderMessage createEncoder(Addressbook addressbook) {
+  static EncoderMessage encoderMessage(Addressbook addressbook) {
     return _AddressbookEncoder(addressbook);
   }
 
-  static DecoderMessage createDecoder() {
+  static DecoderMessage decoderMessage() {
     return _AddressbookDecoder();
   }
 
@@ -122,7 +122,7 @@ main() {
         Person(2, "Thomas", ["thomas@example1.com", "thomas@example2.com"]));
     
     //now convert the addressbook message to binary bytes.
-    var proto = protobuf.encode(Addressbook.createEncoder(addressbook));
+    var proto = protobuf.encode(Addressbook.encoderMessage(addressbook));
 
     file.writeAsBytesSync(proto.bytes);
     print("Now the binary file $filename has been created.");

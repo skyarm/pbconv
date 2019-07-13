@@ -17,11 +17,11 @@ class Coordinate {
     RequiredField(2, "Latitude", Type.float64)
   ];
 
-  static EncoderMessage createEncoder(Coordinate coord) {
+  static EncoderMessage encoderMessage(Coordinate coord) {
     return CoordinateEncoder(coord);
   }
 
-  static DecoderMessage createDecoder(dynamic value) {
+  static DecoderMessage decoderMessage(dynamic value) {
     return CoordinateDecoder();
   }
 }
@@ -30,14 +30,14 @@ class RequiredCoordinate extends Field {
   RequiredCoordinate(int tag, String name)
       : super(tag, name, Label.required, Type.message,
             value: Coordinate.fields,
-            attrs: Coordinate.createDecoder);
+            attrs: Coordinate.decoderMessage);
 }
 
 class OptionalCoordinate extends Field {
   OptionalCoordinate(int tag, String name)
       : super(tag, name, Label.optional, Type.message,
             value: Coordinate.fields,
-            attrs: Coordinate.createDecoder);
+            attrs: Coordinate.decoderMessage);
 }
 
 class CoordinateEncoder extends EncoderMessage {
@@ -96,8 +96,8 @@ main() {
     child[childFields[0]] = ["This is a string value."];
     child[childFields[1]] = 23;
 
-    root[rootFields[4]] = Timestamp.encoderCreator(DateTime.now()); //set to now
-    root[rootFields[5]] = Coordinate.createEncoder(Coordinate(12.11, 34.23));
+    root[rootFields[4]] = Timestamp.encoderMessage(DateTime.now()); //set to now
+    root[rootFields[5]] = Coordinate.encoderMessage(Coordinate(12.11, 34.23));
 
     var proto = encoder.convert(root);
     print(proto.bytes);

@@ -46,23 +46,15 @@ Message protobufDecode(ProtoBytes proto) {
 class ProtobufEncoder extends Converter<EncoderMessage, ProtoBytes> {
   const ProtobufEncoder();
 
-  Future<List<Uint8List>> _pull(Stream<Uint8List> stream) async {
-    List<Uint8List> bytesList = List<Uint8List>();
-    await for (var bytes in stream) {
-      bytesList.add(bytes);
-    }
-    return bytesList;
-  }
-
   Stream<Uint8List> encode(_BytesPager pager, EncoderMessage message) async* {
     yield* message.encode(pager);
     yield* pager.commit();
   }
 
   ProtoBytes convert(EncoderMessage message) {
-    _BytesPager pager = _BytesPager(128);
+    _BytesPager pager = _BytesPager();
     Stream<Uint8List> stream = encode(pager, message);
-    var bytesList = waitFor(_pull(stream));
+    var bytesList = waitFor(stream.toList());
     int count = 0;
     for (var bytes in bytesList) {
       count += bytes.length;
@@ -80,6 +72,8 @@ class ProtobufEncoder extends Converter<EncoderMessage, ProtoBytes> {
       Sink<ProtoBytes> sink) {
     return _ProtobufEncoderSink(sink);
   }
+
+  static int encoderPageSize = 128;
 }
 
 class _ProtobufEncoderSink extends ChunkedConversionSink<EncoderMessage> {
@@ -92,7 +86,7 @@ class _ProtobufEncoderSink extends ChunkedConversionSink<EncoderMessage> {
     if (_isDone) {
       throw StateError("Only one call to add allowed");
     }
-    var pager = _BytesPager(128);
+    var pager = _BytesPager();
     waitFor((_sink as IOSink).addStream(encode(pager, m)));
     _isDone = true;
     _sink.close();
