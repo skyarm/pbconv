@@ -120,7 +120,7 @@ class DecoderMessage extends Message {
               field._name, field._tag);
         }
         //FIMEME: only as Uint64 can get right value.
-         _setNumber(field, _decodeUint64(bytes, offset, length));
+        _setNumber(field, _decodeUint64(bytes, offset, length));
         break;
       case Type.sint32:
         if (wire != _Wire.varint.index) {
@@ -293,7 +293,8 @@ class DecoderMessage extends Message {
                 field._name, field._tag);
           }
           if (field._type == Type.sint32) {
-            _addNumber(field, _unzigzag32(_decodeUint32(bytes, offset, length)));
+            _addNumber(
+                field, _unzigzag32(_decodeUint32(bytes, offset, length)));
           } else if (field._type == Type.int32) {
             //FIMEME: only as Uint64 can get right value.
             _addNumber(field, _decodeUint64(bytes, offset, length));
@@ -382,7 +383,8 @@ class DecoderMessage extends Message {
                 field._tag);
           }
           if (field._type == Type.sint64) {
-            _addNumber(field, _unzigzag64(_decodeUint64(bytes, offset, length)));
+            _addNumber(
+                field, _unzigzag64(_decodeUint64(bytes, offset, length)));
           } else {
             _addNumber(field, _decodeUint64(bytes, offset, length));
           }
