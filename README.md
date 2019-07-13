@@ -11,25 +11,26 @@ import "dart:io";
 import 'package:pbconv/pbconv.dart';
 
 final List<Field> fields = [
-    RequiredField(1, 'ID', Type.uint32),
-    RequiredField(2, "Name", Type.string),
-    OptionalField(3, "Email", Type.string, 'tom@example.com')
+  RequiredField(1, 'ID', Type.uint32),
+  RequiredField(2, "Name", Type.string),
+  OptionalField(3, "Email", Type.string, 'tom@example.com')
 ];
 
 main() {
   var message = EncoderMessage(fields);
   message[fields[0]] = 1;
   message[fields[1]] = 'Tom';
-  ProtobufEncoder encoder = ProtobufEncoder();
-  print(encoder.convert(message));
+  var proto = protobufEncode(message);
+  print(proto.bytes);
   File file = File("example.bin");
-  file.writeAsBytesSync(bytes);
+  file.writeAsBytesSync(proto.bytes);
 }
 ```
 
 This is decoder example.
 ```dart
 import "dart:io";
+import 'dart:typed_data';
 import 'package:pbconv/pbconv.dart';
 
 final List<Field> fields = [
@@ -41,8 +42,8 @@ final List<Field> fields = [
 main() {
   File file = File("example.bin");
   var bytes = file.readAsBytesSync();
-  ProtobufDecoder decoder = ProtobufDecoder(fields);
-  DecoderMessage message = decoder.convert(bytes);
+  print(bytes);
+  var message = protobufDecode(ProtoBytes(fields, bytes as Uint8List));
   print(message.toString());
 }
 ```
