@@ -115,6 +115,29 @@ class ProtobufDecoder extends Converter<ProtoBytes, Message> {
     return message;
   }
 
+  Message decode(Stream<ProtoBytes> stream) {
+    var bytesList = waitFor(stream.toList());
+     int count = 0; 
+    List<Field> fields;
+    for (var proto in bytesList) {
+      if (fields == null) {
+        fields = proto.fields;
+      } else {
+        if (proto.fields != fields) {
+          throw StateError("Field list value is changed.");
+        }
+      }
+      count += proto.bytes.length;
+    }
+    Uint8List result = Uint8List(count);
+    int offset = 0;
+    for (var proto in bytesList) {
+      result.setRange(offset, offset + proto.bytes.length, proto.bytes);
+      offset += proto.bytes.length;
+    }
+    return protobufDecode(ProtoBytes(fields, result));
+  }
+
   ChunkedConversionSink<ProtoBytes> startChunkedConversion(Sink<Message> sink) {
     return _ProtobufDecoderSink(sink);
   }
