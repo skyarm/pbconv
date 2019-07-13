@@ -8,6 +8,7 @@
 		"editor.defaultFormatter": "Dart-Code.dart-code",
 		"files.associations": {
 			"*.ipp": "cpp"
-		}
+		},
+		"commentTranslate.targetLanguage": "zh-CN"
 	}
 }

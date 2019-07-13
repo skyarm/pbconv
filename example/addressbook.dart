@@ -19,7 +19,7 @@ class Person {
   }
 
   //this static method must be implemented.
-  static DecoderMessage createDecoder(dynamic value) {
+  static DecoderMessage decoderCreator(dynamic value) {
     return _PersonDecoder();
   }
 
@@ -57,7 +57,7 @@ class _PersonDecoder extends DecoderMessage {
 class RepeatedPersonField extends Field {
   RepeatedPersonField(int tag, String name)
       : super(tag, name, Label.repeated, Type.message,
-            value: Person.fields, attrs: Person.createDecoder);
+            value: Person.fields, attrs: Person.decoderCreator);
 }
 
 //Addressbook
@@ -132,7 +132,7 @@ main() {
     DecoderMessage message =
         protobuf.decode(ProtoBytes(Addressbook.fields, bytes as Uint8List))
             as DecoderMessage;
-    //decoderMessage.toString() return XML debug message, but the message hasn't root element.
+    //decoderMessage.toString() return XML debug message, but the message hasn't root node.
     //it is used for debug only.
     print(message.toString());
 
