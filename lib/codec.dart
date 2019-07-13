@@ -54,14 +54,14 @@ class ProtobufEncoder extends Converter<EncoderMessage, ProtoBytes> {
     return bytesList;
   }
 
-  Stream<Uint8List> _encode(_BytesPager pager, EncoderMessage message) async* {
+  Stream<Uint8List> encode(_BytesPager pager, EncoderMessage message) async* {
     yield* message.encode(pager);
     yield* pager.commit();
   }
 
   ProtoBytes convert(EncoderMessage message) {
     _BytesPager pager = _BytesPager(128);
-    Stream<Uint8List> stream = _encode(pager, message);
+    Stream<Uint8List> stream = encode(pager, message);
     var bytesList = waitFor(_pull(stream));
     int count = 0;
     for (var bytes in bytesList) {
