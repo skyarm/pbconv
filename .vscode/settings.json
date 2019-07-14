@@ -15,6 +15,7 @@
         "pbconv",
         "sfixed",
         "sint",
+        "unzigzag",
         "varint"
     ]
 }

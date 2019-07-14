@@ -176,7 +176,7 @@ abstract class Message {
       node = _BooleanNode(field, value);
       _nodes[field] = node;
     } else {
-      throw FormatException("Duplicated node", field._name, field._tag);
+      throw ProtobufException("Duplicated node, Field[${field._tag}, ${field._name}].");
     }
   }
 
@@ -186,7 +186,7 @@ abstract class Message {
       node = _RepeatedBooleanNode(field, List<bool>());
       _nodes[field] = node;
     } else {
-      throw FormatException("Duplicated node", field._name, field._tag);
+      throw ProtobufException("Duplicated node, Field[${field._tag}, ${field._name}].");
     }
   }
 
@@ -206,7 +206,7 @@ abstract class Message {
       node = _NumberNode(field, value);
       _nodes[field] = node;
     } else {
-      throw FormatException("Duplicated node", field._name, field._tag);
+      throw ProtobufException("Duplicated node, Field[${field._tag}, ${field._name}].");
     }
   }
 
@@ -216,7 +216,7 @@ abstract class Message {
       node = _RepeatedNumberNode(field, List<num>());
       _nodes[field] = node;
     } else {
-      throw FormatException("Duplicated node", field._name, field._tag);
+      throw ProtobufException("Duplicated node, Field[${field._tag}, ${field._name}].");
     }
   }
   
@@ -237,7 +237,7 @@ abstract class Message {
       node = _StringNode(field, value);
       _nodes[field] = node;
     } else {
-      throw FormatException("Duplicated node", field._name, field._tag);
+      throw ProtobufException("Duplicated node, Field[${field._tag}, ${field._name}].");
     }
   }
 
@@ -256,7 +256,7 @@ abstract class Message {
       node = _BytesNode(field, value);
       _nodes[field] = node;
     } else {
-      throw FormatException("Duplicated node", field._name, field._tag);
+      throw ProtobufException("Duplicated node, Field[${field._tag}, ${field._name}].");
     }
   }
 
@@ -275,7 +275,7 @@ abstract class Message {
       node = _MessageNode(field, value);
       _nodes[field] = node;
     } else {
-      throw FormatException("Duplicated node", field._name, field._tag);
+      throw ProtobufException("Duplicated node, Field[${field._tag}, ${field._name}].");
     }
   }
 

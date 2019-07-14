@@ -33,13 +33,14 @@ class DecoderMessage extends Message {
       int tag, wire;
       int result = _decodeTag(bytes, offset, end - offset);
       if (result == -1) {
-        throw FormatException("Failed to decode tag", "", offset);
+        throw ProtobufException("Failed to decode tag, Offset[$offset].");
       }
       tag = result & 0xffffffff;
       wire = (result >> 32) & 0x7;
       offset += (result >> 35);
       if (offset >= end) {
-        throw FormatException("Failed to decode tag, bad length", "", offset);
+        throw ProtobufException(
+            "Failed to decode tag, bad length, Offset[$offset].");
       }
 
       int length = 0;
@@ -50,25 +51,25 @@ class DecoderMessage extends Message {
       } else if (wire == _Wire.varint.index) {
         length = _varintLength(bytes, offset, end - offset, 10);
         if (length == -1) {
-          throw FormatException(
-              "Failed to decode number, bad length", "", offset);
+          throw ProtobufException(
+              "Failed to decode number, bad length, Offset[$offset].");
         }
       } else if (wire == _Wire.length.index) {
         result = _decodeLength(bytes, offset, end - offset);
         if (result == -1) {
-          throw FormatException("Failed to decode length", "", offset);
+          throw ProtobufException("Failed to decode length, Offset[$offset].");
         }
         length = result & 0xffffffff;
         offset += result >> 32; //Skip the length varint
       } else {
-        throw FormatException("Invalid wire", "", offset);
+        throw ProtobufException("Invalid wire, Offset[$offset].");
       }
       //the length is the length of required or optional node,
       //or the count of repeated nodes.
       //if it's count of repeated node, check the region in decodeRepeatedNode method.
       if (offset + length > end) {
-        throw FormatException(
-            "Failed to decode length, length is too large", "", offset);
+        throw ProtobufException(
+            "Failed to decode length, length is too large, Offset[$offset].");
       }
 
       Field field = _lookupField(tag);
@@ -101,109 +102,109 @@ class DecoderMessage extends Message {
     switch (field._type) {
       case Type.boolean:
         if (wire != _Wire.varint.index) {
-          throw FormatException(
-              "Failed to decode boolean, Bad wire", field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode boolean, Bad wire, Field[${field._tag}, ${field._name}");
         }
         _setBool(field, _decodeBoolean(bytes, offset, length));
         break;
       case Type.enumerated:
       case Type.uint32:
         if (wire != _Wire.varint.index) {
-          throw FormatException("Failed to decode varint32 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode varint32 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _decodeUint32(bytes, offset, length));
         break;
       case Type.int32:
         if (wire != _Wire.varint.index) {
-          throw FormatException("Failed to decode varint32 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode varint32 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         //FIMEME: only as Uint64 can get right value.
         _setNumber(field, _decodeUint64(bytes, offset, length));
         break;
       case Type.sint32:
         if (wire != _Wire.varint.index) {
-          throw FormatException("Failed to decode varint32 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode varint32 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _unzigzag32(_decodeUint32(bytes, offset, length)));
         break;
       case Type.fixed32:
         if (wire != _Wire.num32.index) {
-          throw FormatException("Failed to decode fixed32 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode fixed32 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _decodeFixed32(bytes, offset, length));
         break;
       case Type.sfixed32:
         if (wire != _Wire.num32.index) {
-          throw FormatException("Failed to decode sfixed32 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode fixed32 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _decodeSfixed32(bytes, offset, length));
         break;
       case Type.float32:
         if (wire != _Wire.num32.index) {
-          throw FormatException("Failed to decode float32 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode float32 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _decodeFloat32(bytes, offset, length));
         break;
       case Type.int64:
       case Type.uint64:
         if (wire != _Wire.varint.index) {
-          throw FormatException("Failed to decode varint64 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode varint64 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _decodeUint64(bytes, offset, length));
         break;
       case Type.sint64:
         if (wire != _Wire.varint.index) {
-          throw FormatException("Failed to decode varint64 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode varint64 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _unzigzag64(_decodeUint64(bytes, offset, length)));
         break;
       case Type.fixed64:
         if (wire != _Wire.num64.index) {
-          throw FormatException("Failed to decode fixed64 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode fixed64 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _decodeFixed64(bytes, offset, length));
         break;
       case Type.sfixed64:
         if (wire != _Wire.num64.index) {
-          throw FormatException("Failed to decode sfixed64 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode sfixed64 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _decodeSfixed64(bytes, offset, length));
         break;
       case Type.float64:
         if (wire != _Wire.num64.index) {
-          throw FormatException("Failed to decode float64 number, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode float64 number, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setNumber(field, _decodeFloat64(bytes, offset, length));
         break;
       case Type.string:
         if (wire != _Wire.length.index) {
-          throw FormatException(
-              "Failed to decode string, Bad wire", field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode string, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setString(field, _decodeString(bytes, offset, length));
         break;
       case Type.bytes:
         if (wire != _Wire.length.index) {
-          throw FormatException(
-              "Failed to decode bytes, Bad wire", field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode bytes, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _setBytes(field, _decodeBytes(bytes, offset, length));
         break;
       case Type.message:
         if (wire != _Wire.length.index) {
-          throw FormatException(
-              "Failed to decode message, Bad wire", field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode message, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         if (field._attrs == null) {
           var message = DecoderMessage(field._value as List<Field>);
@@ -227,18 +228,16 @@ class DecoderMessage extends Message {
       case Type.boolean:
         if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
-            throw FormatException("Failed to decode repeated boolean, Bad wire",
-                field._name, field._tag);
+            throw ProtobufException(
+                "Failed to decode repeated boolean, Bad wire, Field[${field._tag}, ${field._name}].");
           }
           var values = List<bool>();
           while (offset < end) {
             int count = _varintLength(bytes, offset, end - offset, 1);
             //length always is 1.
             if (count != 1 || offset + count > end) {
-              throw FormatException(
-                  "Failed to decode packed boolean, Bad length",
-                  field._name,
-                  field._tag);
+              throw ProtobufException(
+                  "Failed to decode packed boolean, Bad length, Field[${field._tag}, ${field._name}].");
             }
             values.add(_decodeBoolean(bytes, offset, count));
             offset += count;
@@ -246,12 +245,12 @@ class DecoderMessage extends Message {
           _setRepeatedBool(field, values);
         } else {
           if (wire != _Wire.varint.index) {
-            throw FormatException("Failed to decode repeated boolean, Bad wire",
-                field._name, field._tag);
+            throw ProtobufException(
+                "Failed to decode repeated boolean, Bad wire, Field[${field._tag}, ${field._name}].");
           }
           if (length != 1) {
-            throw FormatException("Failed to decode boolean, Bad length",
-                field._name, field._tag);
+            throw ProtobufException(
+                "Failed to decode boolean, Bad length, Field[${field._tag}, ${field._name}].");
           }
           _addBool(field, _decodeBoolean(bytes, offset, length));
         }
@@ -262,19 +261,15 @@ class DecoderMessage extends Message {
       case Type.sint32:
         if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
-            throw FormatException(
-                "Failed to decode number repeated varint32 number, Bad wire",
-                field._name,
-                field._tag);
+            throw ProtobufException(
+                "Failed to decode number repeated varint32 number, Bad wire Field[${field._tag}, ${field._name}].");
           }
           var values = List<num>();
           while (offset < end) {
             int count = _varintLength(bytes, offset, end - offset, 10);
             if (count == -1 || offset + count > end) {
-              throw FormatException(
-                  "Failed to decode packed varint32 number, Bad length",
-                  field._name,
-                  field._tag);
+              throw ProtobufException(
+                  "Failed to decode packed varint32 number, Bad length Field[${field._tag}, ${field._name}].");
             }
             if (field._type == Type.sint32) {
               values.add(_unzigzag32(_decodeUint32(bytes, offset, count)));
@@ -289,8 +284,8 @@ class DecoderMessage extends Message {
           _setRepeatedNumber(field, values);
         } else {
           if (wire != _Wire.varint.index) {
-            throw FormatException("Failed to decode repeated boolean, Bad wire",
-                field._name, field._tag);
+            throw ProtobufException(
+                "Failed to decode repeated boolean, Bad wire, Field[${field._tag}, ${field._name}].");
           }
           if (field._type == Type.sint32) {
             _addNumber(
@@ -308,19 +303,15 @@ class DecoderMessage extends Message {
       case Type.float32:
         if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
-            throw FormatException(
-                "Failed to decode repeated fixed32 number, Bad wire",
-                field._name,
-                field._tag);
+            throw ProtobufException(
+                "Failed to decode repeated fixed32 number, Bad wire, Field[${field._tag}, ${field._name}].");
           }
           var values = List<num>();
           int count = 4;
           while (offset < end) {
             if (offset + count > end) {
-              throw FormatException(
-                  "Failed to decode packed fixed32 number, bad length",
-                  field._name,
-                  field._tag);
+              throw ProtobufException(
+                  "Failed to decode packed fixed32 number, bad length, Field[${field._tag}, ${field._name}].");
             }
             if (field._type == Type.fixed32) {
               values.add(_decodeFixed32(bytes, offset, count));
@@ -334,10 +325,8 @@ class DecoderMessage extends Message {
           _setRepeatedNumber(field, values);
         } else {
           if (wire != _Wire.num32.index) {
-            throw FormatException(
-                "Failed to decode repeated fixed32 number, Bad wire",
-                field._name,
-                field._tag);
+            throw ProtobufException(
+                "Failed to decode repeated fixed32 number, Bad wire, Field[${field._tag}, ${field._name}].");
           }
           if (field._type == Type.fixed32) {
             _addNumber(field, _decodeFixed32(bytes, offset, length));
@@ -353,19 +342,15 @@ class DecoderMessage extends Message {
       case Type.uint64:
         if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
-            throw FormatException(
-                "Failed to decode repeated varint64 number, Bad wire",
-                field._name,
-                field._tag);
+            throw ProtobufException(
+                "Failed to decode repeated varint64 number, Bad wire, Field[${field._tag}, ${field._name}].");
           }
           var values = List<num>();
           while (offset < end) {
             int count = _varintLength(bytes, offset, end - offset, 10);
             if (count == -1 || offset + count > end) {
-              throw FormatException(
-                  "Failed to decode packed varint64 number, Bad length",
-                  field._name,
-                  field._tag);
+              throw ProtobufException(
+                  "Failed to decode packed varint64 number, Bad length, Field[${field._tag}, ${field._name}].");
             }
             if (field._type == Type.sint64) {
               values.add(_unzigzag64(_decodeUint64(bytes, offset, count)));
@@ -377,10 +362,8 @@ class DecoderMessage extends Message {
           _setRepeatedNumber(field, values);
         } else {
           if (wire != _Wire.varint.index) {
-            throw FormatException(
-                "Failed to decode repeated varint64 number, Bad wire",
-                field._name,
-                field._tag);
+            throw ProtobufException(
+                "Failed to decode repeated varint64 number, Bad wire, Field[${field._tag}, ${field._name}].");
           }
           if (field._type == Type.sint64) {
             _addNumber(
@@ -396,17 +379,15 @@ class DecoderMessage extends Message {
       case Type.float64:
         if (field._attrs == null || field._attrs as bool == true) {
           if (wire != _Wire.length.index) {
-            throw FormatException("Failed to decode repeated fixed64, Bad wire",
-                field._name, field._tag);
+            throw ProtobufException(
+                "Failed to decode repeated fixed64, Bad wire, Field[${field._tag}, ${field._name}].");
           }
           var values = List<num>();
           int count = 8;
           while (offset < end) {
             if (offset + count > end) {
-              throw FormatException(
-                  "Failed to decode packed fixed32 number, bad length",
-                  field._name,
-                  field._tag);
+              throw ProtobufException(
+                  "Failed to decode packed fixed32 number, bad length, , Field[${field._tag}, ${field._name}].");
             }
             if (field._type == Type.fixed64) {
               values.add(_decodeFixed64(bytes, offset, count));
@@ -420,10 +401,8 @@ class DecoderMessage extends Message {
           _setRepeatedNumber(field, values);
         } else {
           if (wire != _Wire.num64.index) {
-            throw FormatException(
-                "Failed to decode repeated fixed64 number, Bad wire",
-                field._name,
-                field._tag);
+            throw ProtobufException(
+                "Failed to decode repeated fixed64 number, Bad wire, Field[${field._tag}, ${field._name}].");
           }
           if (field._type == Type.fixed64) {
             _addNumber(field, _decodeFixed64(bytes, offset, length));
@@ -437,24 +416,24 @@ class DecoderMessage extends Message {
 
       case Type.string:
         if (wire != _Wire.length.index) {
-          throw FormatException("Failed to decode repeated string, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode repeated string, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _addString(field, _decodeString(bytes, offset, length));
         break;
 
       case Type.bytes:
         if (wire != _Wire.length.index) {
-          throw FormatException("Failed to decode repeated bytes, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode repeated bytes, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         _addBytes(field, _decodeBytes(bytes, offset, length));
         break;
 
       case Type.message:
         if (wire != _Wire.length.index) {
-          throw FormatException("Failed to decode repeated message, Bad wire",
-              field._name, field._tag);
+          throw ProtobufException(
+              "Failed to decode repeated message, Bad wire, Field[${field._tag}, ${field._name}].");
         }
         if (field._attrs == null) {
           var message = DecoderMessage(field._value as List<Field>);
@@ -487,8 +466,8 @@ class DecoderMessage extends Message {
   void review() {
     for (var field in _fields) {
       if (field._label == Label.required && !_nodes.containsKey(field)) {
-        throw FormatException("Required field must be initialled with a value",
-            field._name, field._tag);
+        throw ProtobufException(
+            "Required field must be initialled, Field[${field._tag}, ${field._name}].");
       }
     }
   }
@@ -617,7 +596,6 @@ class DecoderMessage extends Message {
     int tag = (bytes[offset] & 0x7f) >> 3;
     int wire = bytes[offset] & 7;
     int value = 0;
-    //because the tag offen < 128?
     if ((bytes[offset] & 0x80) == 0) {
       //low 32 bit is tag, hign 32 bits is count and 3 bits wire.
       value = (1 << 3 | wire) << 32;
@@ -665,4 +643,13 @@ class DecoderMessage extends Message {
   }
 
   List<Fragment> _fragments;
+}
+
+class ProtobufException implements Exception {
+  ProtobufException(this.message);
+  String toString() {
+    return message;
+  }
+
+  final String message;
 }
