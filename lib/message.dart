@@ -183,7 +183,7 @@ abstract class Message {
   void _setRepeatedBool(Field field, List<bool> values) {
     var node = _nodes[field] as _RepeatedBooleanNode;
     if (node == null) {
-      node = _RepeatedBooleanNode(field, List<bool>());
+      node = _RepeatedBooleanNode(field, values);
       _nodes[field] = node;
     } else {
       throw ProtobufException("Duplicated node, Field[${field._tag}, ${field._name}].");
@@ -213,7 +213,7 @@ abstract class Message {
   void _setRepeatedNumber(Field field, List<num> values) {
     var node = _nodes[field] as _RepeatedNumberNode;
     if (node == null) {
-      node = _RepeatedNumberNode(field, List<num>());
+      node = _RepeatedNumberNode(field, values);
       _nodes[field] = node;
     } else {
       throw ProtobufException("Duplicated node, Field[${field._tag}, ${field._name}].");
