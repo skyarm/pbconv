@@ -9,7 +9,7 @@ final List<Field> fields = [
 ];
 
 main() {
-  File file = File("example.bin");
+  File file = File("readme.bin");
   var bytes = file.readAsBytesSync();
   print(bytes);
   var message = protobufDecode(ProtoBytes(fields, bytes as Uint8List));

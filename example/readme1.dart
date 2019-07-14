@@ -13,6 +13,6 @@ main() {
   message[fields[1]] = 'Tom';
   var proto = protobufEncode(message);
   print(proto.bytes);
-  File file = File("example.bin");
+  File file = File("readme.bin");
   file.writeAsBytesSync(proto.bytes);
 }
