@@ -505,7 +505,7 @@ class DecoderMessage extends Message {
 
   static int _decodeFixed32(Uint8List data, int offset, int count) {
     var bd = data.buffer.asByteData(offset);
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     return bd.getUint32(0, Endian.little);
@@ -513,7 +513,7 @@ class DecoderMessage extends Message {
 
   static int _decodeSfixed32(Uint8List data, int offset, int count) {
     var bd = data.buffer.asByteData(offset);
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     return bd.getInt32(0, Endian.little);
@@ -521,7 +521,7 @@ class DecoderMessage extends Message {
 
   static double _decodeFloat32(Uint8List byteList, int offset, int count) {
     var bd = byteList.buffer.asByteData(offset);
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     return bd.getFloat32(0, Endian.little);
@@ -546,7 +546,7 @@ class DecoderMessage extends Message {
 
   static int _decodeFixed64(Uint8List byteList, int offset, int size) {
     var byteData = byteList.buffer.asByteData(offset);
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     return byteData.getUint64(0, Endian.little);
@@ -554,7 +554,7 @@ class DecoderMessage extends Message {
 
   static int _decodeSfixed64(Uint8List byteList, int offset, int size) {
     var byteData = byteList.buffer.asByteData(offset);
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     return byteData.getInt64(0, Endian.little);
@@ -562,7 +562,7 @@ class DecoderMessage extends Message {
 
   static double _decodeFloat64(Uint8List byteList, int offset, int size) {
     var byteData = byteList.buffer.asByteData(offset);
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     return byteData.getFloat64(0, Endian.little);

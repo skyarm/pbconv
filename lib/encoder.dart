@@ -190,7 +190,7 @@ abstract class _Node {
   Stream<Uint8List> encodeFixedU32(_BytesPager pager, int value) async* {
     var bytes = Uint8List(4);
     var byteData = bytes.buffer.asByteData();
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     byteData.setUint32(0, value, Endian.little);
@@ -200,7 +200,7 @@ abstract class _Node {
   Stream<Uint8List> encodeFixedS32(_BytesPager pager, int value) async* {
     var bytes = Uint8List(4);
     var byteData = bytes.buffer.asByteData();
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     byteData.setInt32(0, value, Endian.little);
@@ -210,7 +210,7 @@ abstract class _Node {
   Stream<Uint8List> encodeFixedU64(_BytesPager pager, int value) async* {
     var bytes = Uint8List(8);
     var byteData = bytes.buffer.asByteData();
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     byteData.setUint64(0, value, Endian.little);
@@ -220,7 +220,7 @@ abstract class _Node {
   Stream<Uint8List> encodeFixedS64(_BytesPager pager, int value) async* {
     var bytes = Uint8List(8);
     var byteData = bytes.buffer.asByteData();
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     byteData.setInt64(0, value, Endian.little);
@@ -230,7 +230,7 @@ abstract class _Node {
   Stream<Uint8List> encodeFloat32(_BytesPager pager, double value) async* {
     var bytes = Uint8List(4);
     var byteData = bytes.buffer.asByteData();
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     byteData.setFloat32(0, value, Endian.little);
@@ -240,7 +240,7 @@ abstract class _Node {
   Stream<Uint8List> encodeFloat64(_BytesPager pager, double value) async* {
     var bytes = Uint8List(8);
     var byteData = bytes.buffer.asByteData();
-    //FIXME:Why it using Litte Endia? Or using the host byte order?
+    //FIXME:Why it using Little Endia? Or using the host byte order?
     //When I using the network byte order, but get wrong result,
     //So I have to using Endian.little to decode it.
     byteData.setFloat64(0, value, Endian.little);
